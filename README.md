@@ -7,24 +7,13 @@ Tower defense medieval em pixel art 2D top-down 3/4: o rei, com o poder da coroa
 - **GDD:** [Notion — 🗼 TD](https://app.notion.com/p/TD-414ae533febb802f9441d8f3cc6e0717)
 - **Art Bible:** [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md) + [`docs/art-style.json`](docs/art-style.json)
 
-## Estrutura
+## Documentos
 
-```
-Assets/_Project/
-  Art/            sprites em pixel art (PPU 16, Point, sem compressão — aplicado no import)
-    Enemies/ PlayerUnits/ Towers/ Projectiles/ Tiles/ VFX/
-    UI/           arte vetorial da interface (fora da regra de pixel art)
-  Audio/          Music/ SFX/
-  Data/           ScriptableObjects: Towers/ Enemies/ Items/ Waves/ Levels/ Powers/
-  Materials/
-  Prefabs/        Towers/ Enemies/ Units/ Projectiles/ UI/
-  Scenes/
-  Scripts/        Core/ Combat/ Towers/ Enemies/ Waves/ Economy/ Progression/ Items/ Powers/ UI/ Editor/
-  Shaders/        recolor por paleta indexada
-  UI/             UXML/ USS/ Fonts/
-ArtSource/        scripts Python que geram os sprites (fonte da arte)
-docs/             Art Bible e paletas
-```
+- [`CLAUDE.md`](CLAUDE.md): onde está a verdade, regras do projeto e convenções.
+- [`docs/GDD.md`](docs/GDD.md): regras e números.
+- [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md): decisões técnicas, pastas, assemblies e onde fica cada parte.
+- [`docs/PLANO.md`](docs/PLANO.md): fases, checklists, decisões e riscos.
+- [`docs/ART_BIBLE.md`](docs/ART_BIBLE.md): estilo e entrega dos sprites.
 
 ## Arte
 
