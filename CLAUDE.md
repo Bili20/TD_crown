@@ -12,7 +12,7 @@ Tower defense de campanha em pixel art 2D top-down 3/4 para **Windows**, na Stea
 ## Regras do projeto
 
 1. **Simulação de combate em C# puro**, em `Assets/_Project/Scripts/Core` (assembly `TDCrown.Core`, sem referência à Unity). Não usar Rigidbody2D, Physics2D nem NavMesh para torres, inimigos e projéteis.
-2. **Passo fixo de 1/60 s** com acumulador e no máximo 8 passos por quadro; a velocidade 2x roda o dobro de passos. O visual interpola.
+2. **Passo fixo de 1/60 s** com acumulador sobre o `Time.deltaTime` e no máximo 8 passos por quadro. 1x/2x e pausa só pelo `Time.timeScale`. O visual interpola.
 3. **Unidades:** 1 tile = 16 px = 1 unidade de mundo (PPU 16). A simulação usa tiles, sem conversão.
 4. **Números ficam em ScriptableObjects** (`CombatConfig`, `TowerDefinition`, `EnemyDefinition`, `LevelDefinition`, ...), nunca espalhados no código.
 5. **A simulação emite eventos**; views, sons e UI assinam. A simulação não referencia nada visual.
@@ -24,6 +24,8 @@ Tower defense de campanha em pixel art 2D top-down 3/4 para **Windows**, na Stea
    - Um arquivo por animação: `{asset_id}_{animação}.png`.
    - Assets do jogador usam só os 8 cinzas de índice e as rampas fixas permitidas.
    - O import (PPU 16, Point, sem compressão) é feito pelo `PixelArtImportPostprocessor`.
+   - **Animator da Unity:** um controller base por categoria e um override por asset. Clips e overrides saem de **TD Crown → Arte → Gerar animações**, a partir do `art-manifest.json`; não criar nem editar clip à mão.
+   - Clips animam só `SpriteRenderer.sprite`: transform é do andar procedural e cor é do recolor.
 9. **Assemblies:**
    - `TDCrown.Core` (`Scripts/Core`, `noEngineReferences`): combate.
    - `TDCrown` (o resto de `Scripts/`): o jogo.

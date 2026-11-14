@@ -168,6 +168,10 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 
   - Exemplos: `imp_idle.png`, `imp_attack.png`, `balista_base_lv1_idle.png`, `balista_turret_lv1_attack.png`, `balista_bolt_directions.png`.
   - Pasta: `Assets/_Project/Art/{categoria}/{Asset}/`, todos os arquivos de um asset juntos.
+- **Na Unity (Animator):**
+  - Cada arquivo vira um clip `{asset_id}_{animação}.anim`, com a duração de cada frame igual à do script de arte (não um fps fixo).
+  - O script de arte registra no `Assets/_Project/Art/art-manifest.json`: tamanho do frame, pivô, durações em ms, loop e frame de impacto (`impact_frame`, o frame em que o golpe acerta ou o projétil sai).
+  - O gerador **TD Crown → Arte → Gerar animações** fatia os sheets e cria os clips e os overrides a partir do manifesto.
 - **Pasta:** `Assets/_Project/Art/` + `Enemies/`, `PlayerUnits/`, `Towers/`, `Tiles/`, `Projectiles/`.
 - **Import:** Sprite Mode Multiple, PPU 16, Filter Point, Compression None, sem mipmap, slice Grid By Cell Size, pivô Bottom Center.
 - Nada de editar `.meta`, `.prefab` ou `.asset` à mão.

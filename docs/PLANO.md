@@ -56,6 +56,10 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
 - [x] `PixelArtImportPostprocessor` (PPU 16, Point, sem compressão).
 - [x] Primeiros sprites: soldado da Forja nv2, Diabrete, Balista nv1–nv3 e virote.
 - [ ] Os quatro `.asmdef` da arquitetura (`TDCrown.Core` com `noEngineReferences`).
+- [x] Teste do Animator com um sprite do Diabrete (controller `Triangle`, clip `Idle`).
+- [ ] Scripts de `ArtSource/` escrevendo o `art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto).
+- [ ] **TD Crown → Arte → Gerar animações**: fatia os sheets, cria clips e overrides; controllers base `Unit`, `TowerTurret` e `TowerBase`.
+- [ ] Trocar o teste pelos clips gerados e apagar os sheets antigos `*_sheet.png`.
 - [ ] Pacote Pipeline (`unity pipeline install`) para o Claude dirigir o Editor pelo Unity CLI.
 - [ ] Pixel Perfect Camera (640×360, PPU 16), Custom Axis `(0, 1, 0)` e as camadas de sorting.
 - [ ] Menu **TD Crown → Build Windows** e o `.exe` abrindo em outro PC.
@@ -89,7 +93,7 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
   - `EnemyView`, `SoldierView` e `ProjectileView`;
   - interpolação entre passos.
 - [ ] Shader `SpriteRecolor` com a textura de paleta e o `TeamPalette`. Conferir os 4 presets contra o lineup da Art Bible.
-- [ ] `SpriteAnimator` com `SpriteAnimationClip`; `ProceduralWalk`; morte procedural e sombra separada.
+- [ ] Animator nas views (trigger `Attack` no `TowerAttackStarted`, troca de override ao subir de nível); `ProceduralWalk`; morte procedural e sombra separada.
 - [ ] HUD mínimo (vidas, ouro, onda, 1x/2x, chamar onda) e menu radial (construir, upgrade, vender) em UI Toolkit.
 - [ ] Linhas do bastião e hover do ponto vazio mostrando o Dom.
 - [ ] 3 fases do slice com Diabrete, Cão Infernal e Brutamontes.
@@ -195,17 +199,14 @@ Cada região traz 7 fases, 7 itens e a arte do bioma.
 
 ## Decisões para tomar
 
-1. **Animação de sprite:**
-   - Player próprio (`SpriteAnimator`): recomendado na ARQUITETURA.
-   - Animator Controller da Unity: o teste atual usa ele.
-2. **Quais especializações entram na demo interna:**
+1. **Quais especializações entram na demo interna:**
    - todas as 12;
    - ou só as das 3 torres do slice (Balista, Forja, Campanário).
-3. **Áudio:** Audio Mixer da Unity, ou FMOD se entrar um sonoplasta.
-4. **Velocidades** "muito rápido / lento / médio" dos inimigos: fechar no playtest do slice.
-5. **Nome do jogo e do reino.**
-6. **Licença comercial** de cada pacote de assets comprado (itens, ícones), antes de entrar na build.
-7. **Notion × GDD.md:** manter o Notion como caderno de ideias e o GDD.md como verdade, ou parar de atualizar o Notion.
+2. **Áudio:** Audio Mixer da Unity, ou FMOD se entrar um sonoplasta.
+3. **Velocidades** "muito rápido / lento / médio" dos inimigos: fechar no playtest do slice.
+4. **Nome do jogo e do reino.**
+5. **Licença comercial** de cada pacote de assets comprado (itens, ícones), antes de entrar na build.
+6. **Notion × GDD.md:** manter o Notion como caderno de ideias e o GDD.md como verdade, ou parar de atualizar o Notion.
 
 ## Riscos
 

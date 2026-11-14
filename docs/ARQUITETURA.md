@@ -8,12 +8,12 @@
 | Backend de script | Mono | Build rápida, jogo leve |
 | Render | URP com Renderer 2D (template Universal 2D) + **Pixel Perfect Camera** | Pixel art nítido em escala inteira |
 | Combate | **Simulação própria em C# puro** (`TDCrown.Core`), sem física da Unity | Regras exatas do GDD (faixas de defesa, ordem de resolução, status), testes EditMode e ferramenta de balanceamento sem tela |
-| Passo | Passo fixo de **1/60 s** com acumulador, no máximo 8 passos por quadro; 2x = o dobro de passos | Mesmo resultado em qualquer taxa de quadros; o visual interpola |
+| Passo e velocidade | Passo fixo de **1/60 s** com acumulador sobre o `Time.deltaTime`, no máximo 8 passos por quadro. 1x/2x e pausa pelo `Time.timeScale` | Mesmo resultado em qualquer taxa de quadros; Animator e partículas seguem a velocidade sozinhos; a UI usa tempo sem escala |
 | Caminhos | Polilinhas de waypoints feitas na cena da fase e gravadas no `LevelDefinition` | Pontos fixos e rotas fixas: NavMesh e pathfinding não são necessários |
 | Dados | ScriptableObjects para config, torres, inimigos, fases, itens, poderes e árvore | Ajuste no Inspector sem mexer no código |
 | UI | UI Toolkit (UXML/USS) | Decidido no GDD; menu radial e tooltips ancorados no mundo |
 | Entrada | Input System | Mouse + atalhos remapeáveis |
-| Animação de sprite | Player próprio (`SpriteAnimator` + `SpriteAnimationClip`) | Um clip por arquivo de animação da Art Bible; o frame de impacto sai da simulação; andar e morte são procedurais. Ver "Decisões para tomar" no PLANO |
+| Animação de sprite | **Animator da Unity** com Override Controllers | Decidido em 14/11. Um controller base por categoria e um override por asset; um clip por arquivo de animação da Art Bible, gerado por ferramenta; andar e morte continuam procedurais |
 | Recolor | Shader HLSL próprio com textura de paleta | Torres e unidades do jogador em cinza indexado (Art Bible §4.1) |
 | Áudio | Audio Mixer da Unity no começo | FMOD só se entrar um sonoplasta (decisão no PLANO) |
 | Localização | `com.unity.localization`, pt-BR de origem | Texto nunca no código |
@@ -25,6 +25,7 @@
 - Pixel Perfect Camera com resolução de referência **640×360**, escala inteira (×3 em 1080p, ×4 em 1440p). Upscale Render Texture ligado, para o shader de recolor e os efeitos ficarem na grade de pixel.
 - Padrão: 1920×1080 em Fullscreen Window, janela redimensionável. `vSyncCount = 1`; sem V-Sync, `targetFrameRate` = 144.
 - Ao perder o foco, pausa a fase (opção, ligada por padrão).
+- **Velocidade:** 1x/2x e pausa mudam o `Time.timeScale`. O `LevelSim` acumula o `Time.deltaTime` (escalado), então Animator, partículas e simulação andam juntos; a UI anima com tempo sem escala.
 - **Ordem de desenho:** Transparency Sort Mode = Custom Axis `(0, 1, 0)`. Torres, inimigos e soldados têm **Sorting Group** na raiz, posicionada no ponto do chão.
 - **Camadas de sorting**, de trás para frente:
   1. `Ground`: tilemap.
@@ -39,6 +40,8 @@
 ```
 Assets/_Project/
   Art/                    sprites (Art Bible): Enemies/ PlayerUnits/ Towers/ Projectiles/ Tiles/ VFX/; UI/ é vetor
+  Animation/              Controllers/ (Unit, TowerTurret, TowerBase); por asset, os clips gerados
+                          ({asset_id}_{animação}.anim) e o override ({asset_id}.overrideController)
   Audio/Music/ Audio/SFX/
   Data/                   ScriptableObjects: CombatConfig.asset, GameDatabase.asset,
                           Towers/ Enemies/ Levels/ Items/ Powers/ CrownTree/ Palettes/ Animations/
@@ -96,7 +99,7 @@ As dependências vão num sentido só: **Core ← Game ← Presentation / Audio 
 | Parte do jogo | Unity |
 |---|---|
 | Regras e números gerais | `CombatConfig` (ScriptableObject) com um `CombatSettings` (C# puro): faixas de defesa, teto de lentidão, imunidade a controle, `waveTimer`, `earlyCallGoldFactor`, `maxBonusGoldPerKill`, venda 60%, `specializationCostFactor` |
-| Torres | `TowerDefinition`: id, 3 níveis (custo, dano, cadência, alcance e os campos próprios da torre), Dom, especializações, visual por nível (sprites da base, clips da besta/operador, offset da cintura) |
+| Torres | `TowerDefinition`: id, 3 níveis (custo, dano, cadência, alcance, `attackWindup` e os campos próprios da torre), Dom, especializações, visual por nível (override controller da base e da besta/operador, offset da cintura) |
 | Matriz do Dom | `DomMatrix` (ScriptableObject): efeito de cada Dom em cada torre, com "sem efeito" explícito; o hover lê dela |
 | Inimigos | `EnemyDefinition`: id, vida, velocidade, defesas, peso, voador, ouro, vidas que tira, habilidade, clips |
 | Fases | `LevelDefinition`: id (`r1_f01`), cena, caminhos, pontos de construção e bastiões, ouro inicial, vidas, ondas, item da 1ª vitória, par da Provação, falas da Conselheira |
@@ -114,6 +117,7 @@ As dependências vão num sentido só: **Core ← Game ← Presentation / Audio 
 | Do jogo para a fase | `LevelSetup` (C# puro): fase, modo, nós da árvore, itens e poderes escolhidos. O `Game` monta a partir do save e da Preparação |
 | Progresso | `Game/Progression`: estrelas e Selos por fase e modo, nós comprados, itens ganhos, loadout, regiões liberadas |
 | Salvamento | `SaveData` + `SaveSystem`: `save.json` com `version` e migração; JSON quebrado começa de novo |
+| Animações | Controllers base em `Animation/Controllers`; por asset, clips e override gerados por **TD Crown → Arte → Gerar animações** a partir do `art-manifest.json` |
 | Telas | `GameFlow` (UI): título, mapa-múndi, Preparação, fase (HUD), pausa, vitória/derrota, Árvore da Coroa, bestiário, opções |
 | Raiz da fase | `LevelController` (App): carrega a cena da fase por cima da `Game.unity`, cria o `LevelSim`, liga views, áudio, HUD e entrada |
 
@@ -124,13 +128,14 @@ O `LevelSim` não conhece sprites, sons nem UI. Ele emite eventos e o resto reag
 ```csharp
 public delegate void EnemyKilledHandler(EnemyState enemy, TowerState creditedTower, int gold);
 public delegate void HitHandler(in HitResult hit);
-public delegate void TowerFiredHandler(TowerState tower, EnemyState target);
+public delegate void TowerAttackHandler(TowerState tower, EnemyState target);
 
 public event Action<EnemyState> EnemySpawned;
 public event EnemyKilledHandler EnemyKilled;
 public event Action<EnemyState, int> EnemyLeaked;        // vidas tiradas
 public event HitHandler Hit;
-public event TowerFiredHandler TowerFired;               // a view toca o frame de ataque
+public event TowerAttackHandler TowerAttackStarted;     // a view dispara o trigger Attack do Animator
+public event TowerAttackHandler TowerAttackReleased;    // fim do attackWindup: sai o projétil ou o golpe acerta
 public event Action<ZoneState> ZoneCreated, ZoneExpired;
 public event Action<BastionState> DomsChanged;
 public event Action<int> WaveStarted, GoldChanged, LivesChanged;
@@ -155,9 +160,23 @@ public event Action<LevelResult> LevelEnded;
   - **Pixel recolorido:** só o de cinza neutro (`max − min ≤ 2/255`). O índice é `round(cinza × 7)`, calculado no valor **sRGB**: em espaço Linear, converta com `LinearToSRGB` antes.
   - **Pixel com tom:** pele, madeira, pedra, ferro e os materiais das torres passam direto.
   - **`TeamPalette`:** componente que escreve a cor de vértice.
-- **Animação:**
-  - **Clip:** um `SpriteAnimationClip` por arquivo de animação (`{asset_id}_{animação}.png`), com os sprites e a duração de cada frame da Art Bible.
-  - **Player:** o `SpriteAnimator` toca o clip. O ataque começa no `TowerFired` ou no golpe do soldado, para o frame de impacto bater com o dano.
+- **Animação (Animator da Unity):**
+  - **Controllers base**, um por categoria, em `Animation/Controllers`:
+    - `Unit` (soldados e inimigos): `Idle` padrão; `Attack` pelo trigger `Attack`, que volta ao `Idle` no fim do clip; `Hit`, `Death`, `Special` e `Spawn` só quando o asset tiver o clip.
+    - `TowerTurret`: `Idle` e `Attack`.
+    - `TowerBase`: só `Idle` (flâmula, fumaça, sino).
+  - **Por asset:** um `AnimatorOverrideController` (`{asset_id}.overrideController`) troca os clips do controller base. Subir o nível da torre troca o `runtimeAnimatorController` pelo override do nível novo.
+  - **Clips:** um `.anim` por arquivo de animação da Art Bible (`{asset_id}_{animação}.png` → `{asset_id}_{animação}.anim`).
+    - Animam **só** `SpriteRenderer.sprite`: nada de transform (é do andar procedural) nem de cor (é do recolor).
+    - Sample rate 60, com a duração de cada frame vinda da arte, não um fps fixo.
+  - **Gerador:** **TD Crown → Arte → Gerar animações** lê o `Assets/_Project/Art/art-manifest.json`, que os scripts de `ArtSource/` escrevem. Para cada sheet, o manifesto tem tamanho do frame, pivô, durações em ms, loop e frame de impacto.
+    - Fatia o PNG (Grid By Cell Size, pivô Bottom Center).
+    - Cria ou atualiza os clips e o override.
+    - Atualizar mantém o GUID, então prefabs e cenas não perdem a referência.
+  - **Sincronia com a simulação:** o `attackWindup` de cada torre, nível e inimigo é a soma das durações antes do frame de impacto. O gerador confere o valor contra o manifesto e avisa se divergir.
+    - A simulação emite `TowerAttackStarted`; a view dispara o trigger.
+    - Depois do windup, a simulação emite `TowerAttackReleased` e só então o projétil sai ou o golpe acerta.
+  - **Culling:** inimigos usam `Animator.cullingMode = CullUpdateTransforms`.
 - **Andar e morte procedurais:**
   - `ProceduralWalk`: pulo de 1 px, inclinação ±5°, squash no pouso. A frequência segue a velocidade **atual**, então lentidão e atordoamento aparecem sozinhos.
   - Morte: flash, queda e fade.
