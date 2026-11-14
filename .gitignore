@@ -1,0 +1,56 @@
+# Unity — pastas geradas
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Unity — arquivos gerados
+/Assets/AssetStoreTools*
+/Assets/Plugins/Editor/JetBrains*
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+crashlytics-build.properties
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+ExportedObj/
+.consulo/
+
+# Sistema
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Pipeline de arte: previews gerados pelos scripts (os sheets finais vão para Assets/_Project/Art)
+/ArtSource/*.png
+/ArtSource/*.gif
+/ArtSource/__pycache__/
