@@ -40,6 +40,8 @@ python balista.py
 
 Os spritesheets gerados saem em `ArtSource/` (ignorados pelo git); copie o final para `Assets/_Project/Art/`.
 
+**Um arquivo por animação:** `{asset_id}_{animação}.png` com os frames numa linha (`imp_idle.png`, `balista_turret_lv1_attack.png`). Nomes de animação permitidos e regras completas na Art Bible §8.
+
 ### Fatiamento na Unity
 
 O `PixelArtImportPostprocessor` aplica as configurações de import na primeira importação. O slice é feito no Sprite Editor → **Grid By Cell Size**, pivô **Bottom Center**:

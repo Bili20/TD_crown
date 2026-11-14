@@ -1054,12 +1054,8 @@
     "hit_flash_ms": 60
   },
   "export": {
-    "file_pattern": "{asset_id}_sheet.png",
-    "rows": [
-      "idle",
-      "attack"
-    ],
-    "output_dir": "Assets/_Project/Art/",
+    "file_pattern": "{asset_id}_{animation}.png",
+    "output_dir": "Assets/_Project/Art/{category}/{Asset}/",
     "subfolders": {
       "enemy": "Enemies/",
       "player_unit": "PlayerUnits/",
@@ -1073,7 +1069,27 @@
       "compression": "None",
       "mipmaps": false,
       "pivot": "BottomCenter"
-    }
+    },
+    "one_file_per_animation": true,
+    "animation_names": [
+      "idle",
+      "attack",
+      "hit",
+      "death",
+      "special",
+      "spawn",
+      "directions"
+    ],
+    "directions_order": [
+      "E",
+      "SE",
+      "S",
+      "SW",
+      "W",
+      "NW",
+      "N",
+      "NE"
+    ]
   },
   "validation": {
     "edge_margin": 1,

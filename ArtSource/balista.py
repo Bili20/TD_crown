@@ -396,9 +396,10 @@ if __name__ == "__main__":
 
     for level in (1, 2, 3):
         base_frames = [draw_base(level, wave) for wave in BASE_IDLE_WAVES]
-        save_spritesheet([base_frames], f"balista_base_lv{level}_sheet.png")
-        turret_rows = [[draw_turret(level, pose) for pose in TURRET_IDLE], [draw_turret(level, pose) for pose in TURRET_FIRE]]
-        save_spritesheet(turret_rows, f"balista_turret_lv{level}_sheet.png")
+        # Um arquivo por animação (Art Bible §8): {asset_id}_{animação}.png, uma linha de frames.
+        save_spritesheet([base_frames], f"balista_base_lv{level}_idle.png")
+        save_spritesheet([[draw_turret(level, pose) for pose in TURRET_IDLE]], f"balista_turret_lv{level}_idle.png")
+        save_spritesheet([[draw_turret(level, pose) for pose in TURRET_FIRE]], f"balista_turret_lv{level}_attack.png")
         idle = [on_background(compose(level, wave, pose, royal)) for wave, pose in zip(BASE_IDLE_WAVES, TURRET_IDLE)]
         save_preview_gif(idle, f"balista_lv{level}_idle.gif", 6, TURRET_IDLE_DURATIONS_MS, BACKGROUND)
         fire = [on_background(compose(level, 0, pose, royal)) for pose in TURRET_FIRE]
@@ -407,5 +408,5 @@ if __name__ == "__main__":
     turret_contact = [recolor(draw_turret(level, pose), royal) for level in (1, 2, 3) for pose in TURRET_FIRE]
     row_of(turret_contact, gap=2, scale=6).save("balista_fire_contact.png")
     bolts = [draw_bolt(direction) for direction in BOLT_DIRECTIONS.values()]
-    save_spritesheet([bolts], "balista_bolt_sheet.png")
+    save_spritesheet([bolts], "balista_bolt_directions.png")
     row_of([recolor(bolt, royal) for bolt in bolts], gap=2, scale=8).save("balista_bolts_preview.png")

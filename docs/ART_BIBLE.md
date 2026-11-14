@@ -152,7 +152,22 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 
 ## 8. Entrega
 
-- **Arquivo:** `{asset_id}_sheet.png`, uma linha por animação (idle, ataque), frames do mesmo tamanho, fundo transparente, 1 px de folga.
+- **Um arquivo por animação.** Nunca juntar animações diferentes no mesmo PNG. Nome: `{asset_id}_{animação}.png`, com os frames numa única linha, todos do mesmo tamanho, fundo transparente e 1 px de folga dentro de cada frame.
+  - `asset_id` inclui o nível quando o visual muda por nível: `forge_soldier_lv2`, `balista_turret_lv3`.
+  - Vocabulário fixo de animações (usar só estes nomes; um novo entra aqui antes de ser usado):
+
+    | Nome | Uso |
+    |---|---|
+    | `idle` | parado / respirando; bases de torre (flâmula, fumaça, sino) |
+    | `attack` | ataque e disparo de torre |
+    | `hit` | reação a dano, quando for desenhada (o padrão é o hit flash do shader) |
+    | `death` | morte desenhada (o padrão é a morte procedural) |
+    | `special` | habilidade de boss, especialização ou poder; com sufixo quando houver mais de uma (`special_stun`) |
+    | `spawn` | entrada em cena (portal, invocação) |
+    | `directions` | projéteis: uma direção por frame, na ordem E, SE, S, SW, W, NW, N, NE |
+
+  - Exemplos: `imp_idle.png`, `imp_attack.png`, `balista_base_lv1_idle.png`, `balista_turret_lv1_attack.png`, `balista_bolt_directions.png`.
+  - Pasta: `Assets/_Project/Art/{categoria}/{Asset}/`, todos os arquivos de um asset juntos.
 - **Pasta:** `Assets/_Project/Art/` + `Enemies/`, `PlayerUnits/`, `Towers/`, `Tiles/`, `Projectiles/`.
 - **Import:** Sprite Mode Multiple, PPU 16, Filter Point, Compression None, sem mipmap, slice Grid By Cell Size, pivô Bottom Center.
 - Nada de editar `.meta`, `.prefab` ou `.asset` à mão.
@@ -160,13 +175,13 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 ## 9. Exemplos aprovados
 
 ### Soldado da Forja — v2 (aprovado em 10/11)
-- Arquivos: `forge_soldier_index_v2.png` (pose base), `forge_soldier_sheet.png` (idle + ataque).
+- Arquivos: `forge_soldier_index_v2.png` (pose base), `forge_soldier_lv2_idle.png`, `forge_soldier_lv2_attack.png`.
 - Nível: este visual é o **soldado nv2** (chapéu de ferro com pluma). Faltam nv1 (recruta, sem metal) e nv3 (elmo completo, ombreiras, tabardo com emblema) — mesma progressão do operador da Balista.
 - Funcionou: elmo de metal com **pluma do time** — a v1 sem pluma lia como bandana/cabelo loiro; escudo com risco central escuro (a v1 lia como mancha branca); espada de pé ao lado no idle; recolor validado em 4 presets.
 - Refeito: a v1 tinha contorno preto por parte e figura de 15 px; ficou pesada e longe da referência. A v2 tirou o contorno e baixou para ~10 px.
 
 ### Balista nv1–nv3 — v1 (aprovada em 14/11)
-- Arquivos: `balista_base_lv{1,2,3}_sheet.png` (idle da flâmula), `balista_turret_lv{1,2,3}_sheet.png` (linha 1 idle, linha 2 disparo), `balista_bolt_sheet.png` (virote em 8 direções).
+- Arquivos: `balista_base_lv{1,2,3}_idle.png` (flâmula), `balista_turret_lv{1,2,3}_idle.png`, `balista_turret_lv{1,2,3}_attack.png` (disparo), `balista_bolt_directions.png` (virote em 8 direções).
 - Bases: nv1 plataforma de madeira com pernas em X; nv2 torre de vigia de troncos com cintas de ferro, paliçada e escudo do time; nv3 bastião de pedra com ameias, mata-cães e estandarte com emblema.
 - Operador: Recruta → Besteiro → Mestre-Balisteiro (ver §3).
 - Aprovado como está: no nv1 o arco de madeira fica discreto sobre o parapeito de madeira; o destaque cresce nos níveis seguintes.
@@ -174,7 +189,7 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 - Virote com a pena na cor do time, ponta em brilho (índice 7).
 
 ### Diabrete — v2 (aprovado em 10/11)
-- Arquivos: `imp_v2.png` (pose base), `imp_sheet.png` (idle + ataque).
+- Arquivos: `imp_v2.png` (pose base), `imp_idle.png`, `imp_attack.png`.
 - Funcionou: asas de morcego abertas com nervura (a v1 com asa fechada lia como braço), chifres claros, olhos `HELLFIRE`, presa em `EYE_WHITE`, cauda à direita.
 - Escala: ~9 px de altura, menor que o soldado — o enxame tem que parecer fraco sozinho.
 

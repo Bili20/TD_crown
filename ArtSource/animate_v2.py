@@ -165,8 +165,13 @@ if __name__ == "__main__":
     imp_idle = [draw_imp(pose) for pose in IMP_IDLE]
     imp_attack = [draw_imp(pose) for pose in IMP_ATTACK]
 
-    save_spritesheet([soldier_idle, soldier_attack], "forge_soldier_sheet.png")
-    save_spritesheet([imp_idle, imp_attack], "imp_sheet.png")
+    # Um arquivo por animação (Art Bible §8): {asset_id}_{animação}.png, uma linha de frames.
+    for asset_id, animations in (
+        ("forge_soldier_lv2", {"idle": soldier_idle, "attack": soldier_attack}),
+        ("imp", {"idle": imp_idle, "attack": imp_attack}),
+    ):
+        for animation_name, frames in animations.items():
+            save_spritesheet([frames], f"{asset_id}_{animation_name}.png")
 
     royal = PRESETS["real"]
     for name, frames, durations in (
