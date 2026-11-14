@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: balista_turret_lv1
+  m_Controller: {fileID: 9100000, guid: 950340e1ad888c14b9d1c864b28a8c6d, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: b22a812544909a1499240b7303fcc5b6, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 27d509f79568515449876673ba7fa094, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 7f881cf981de87447bf286310aa9589f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3d71541ec8f021447996fe8ddce85329, type: 2}

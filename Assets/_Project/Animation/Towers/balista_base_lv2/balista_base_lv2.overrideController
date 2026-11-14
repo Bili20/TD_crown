@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: balista_base_lv2
+  m_Controller: {fileID: 9100000, guid: 407fab30b2d9f5e40bac139c262294c3, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: bfd2beea5b03ca1409e24e8498719119, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3340d03ba43eaca42a2586cc77d21e40, type: 2}

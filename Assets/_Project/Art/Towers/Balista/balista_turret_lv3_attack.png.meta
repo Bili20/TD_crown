@@ -111,10 +111,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 40
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1875}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -131,12 +131,12 @@ TextureImporter:
       name: balista_turret_lv3_attack_1
       rect:
         serializedVersion: 2
-        x: 39
+        x: 20
         y: 0
-        width: 19
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1875}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -153,12 +153,12 @@ TextureImporter:
       name: balista_turret_lv3_attack_2
       rect:
         serializedVersion: 2
-        x: 59
+        x: 40
         y: 0
         width: 20
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1875}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -171,11 +171,33 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: balista_turret_lv3_attack_3
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 20
+        height: 16
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6bc3fe88269d034095ad376984f2eb1
+      internalID: -1077635251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5ff7496617d3d614d86c0f553514a9b5
     internalID: 0
     vertices: []
     indices: 
@@ -188,6 +210,7 @@ TextureImporter:
       balista_turret_lv3_attack_0: -1343355880732662296
       balista_turret_lv3_attack_1: 2693927073228461197
       balista_turret_lv3_attack_2: -2595700414930217232
+      balista_turret_lv3_attack_3: -1077635251
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

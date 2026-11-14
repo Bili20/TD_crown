@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: forge_soldier_lv2
+  m_Controller: {fileID: 9100000, guid: 8264d59888daccf4aa8f484b487cd160, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 8112dcb9860e31f4f977c5a10c5c9f2a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 54352ea082f156e4faa27c366b17d96c, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: b10154008fa9cc542b9819ac1edfca04, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 761ac53b2d6d96e4e9a8963c3910557c, type: 2}
