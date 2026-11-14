@@ -1,0 +1,289 @@
+{
+  "version": 1,
+  "sheets": [
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_attack.png",
+      "assetId": "imp",
+      "animation": "attack",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        140
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_idle.png",
+      "assetId": "imp",
+      "animation": "idle",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        160,
+        140,
+        160,
+        140
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_attack.png",
+      "assetId": "forge_soldier_lv2",
+      "animation": "attack",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_idle.png",
+      "assetId": "forge_soldier_lv2",
+      "animation": "idle",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        240,
+        180,
+        240,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Projectiles/BalistaBolt/balista_bolt_directions.png",
+      "assetId": "balista_bolt",
+      "animation": "directions",
+      "category": "Projectiles",
+      "controller": "",
+      "frameWidth": 8,
+      "frameHeight": 8,
+      "pivotX": 0.5,
+      "pivotY": 0.5,
+      "durationsMs": [],
+      "loop": false,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_base_lv1_idle.png",
+      "assetId": "balista_base_lv1",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        15
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_base_lv2_idle.png",
+      "assetId": "balista_base_lv2",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        23
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_base_lv3_idle.png",
+      "assetId": "balista_base_lv3",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        30
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv1_attack.png",
+      "assetId": "balista_turret_lv1",
+      "animation": "attack",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        140,
+        60,
+        120,
+        200
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv1_idle.png",
+      "assetId": "balista_turret_lv1",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        260,
+        200,
+        260,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv2_attack.png",
+      "assetId": "balista_turret_lv2",
+      "animation": "attack",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        140,
+        60,
+        120,
+        200
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv2_idle.png",
+      "assetId": "balista_turret_lv2",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        260,
+        200,
+        260,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv3_attack.png",
+      "assetId": "balista_turret_lv3",
+      "animation": "attack",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        140,
+        60,
+        120,
+        200
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_turret_lv3_idle.png",
+      "assetId": "balista_turret_lv3",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerTurret",
+      "frameWidth": 20,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.1875,
+      "durationsMs": [
+        260,
+        200,
+        260,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    }
+  ]
+}

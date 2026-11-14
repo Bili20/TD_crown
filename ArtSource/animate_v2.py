@@ -1,6 +1,7 @@
 from dataclasses import dataclass, replace
 from PIL import Image
-from pixel_canvas import Canvas, Layer, stamp, save_spritesheet, save_preview_gif
+from pixel_canvas import Canvas, Layer, stamp, save_preview_gif
+from art_export import export_animation
 from style_test import PLAYER_COLORS, PRESETS, BACKGROUND, REGION1, recolor
 from style_test_v2 import IMP_COLORS, on_shadow
 
@@ -26,6 +27,7 @@ SOLDIER_UPPER = [
 SOLDIER_PLUME_TIP = ["......c"]
 SOLDIER_PLUME_TIP_SWAYED = [".......c"]
 SOLDIER_LEGS = [".....oo.oo"]
+SOLDIER_GROUND_ROW = 14
 
 SWORD_REST = [
     "............w",
@@ -88,6 +90,7 @@ SOLDIER_ATTACK = [
     SoldierPose(),                                   # retorno
 ]
 SOLDIER_ATTACK_DURATIONS_MS = [140, 70, 110, 160]
+SOLDIER_ATTACK_IMPACT_FRAME = 1
 
 # --- Diabrete --------------------------------------------------------------------------------------
 IMP_BODY = [
@@ -115,6 +118,7 @@ IMP_WINGS = [
 IMP_TAIL_REST = ["..........aa..", "...........a", "..........a"]
 IMP_TAIL_FLICK = ["............aa", "..........aa", "..........a"]
 IMP_LEGS = ["......a..a"]
+IMP_GROUND_ROW = 13
 FIRE_SPIT = [".............y", "..............h", ".............h"]
 
 
@@ -153,6 +157,7 @@ IMP_ATTACK = [
     ImpPose(),
 ]
 IMP_ATTACK_DURATIONS_MS = [140, 70, 110, 140]
+IMP_ATTACK_IMPACT_FRAME = 1
 
 
 def preview_frames(frames, shadow_left, shadow_width, shadow_top):
@@ -165,13 +170,16 @@ if __name__ == "__main__":
     imp_idle = [draw_imp(pose) for pose in IMP_IDLE]
     imp_attack = [draw_imp(pose) for pose in IMP_ATTACK]
 
-    # Um arquivo por animação (Art Bible §8): {asset_id}_{animação}.png, uma linha de frames.
-    for asset_id, animations in (
-        ("forge_soldier_lv2", {"idle": soldier_idle, "attack": soldier_attack}),
-        ("imp", {"idle": imp_idle, "attack": imp_attack}),
-    ):
-        for animation_name, frames in animations.items():
-            save_spritesheet([frames], f"{asset_id}_{animation_name}.png")
+    # Um arquivo por animação (Art Bible §8), gravado direto no projeto e registrado no art-manifest.json.
+    soldier = dict(category="PlayerUnits", asset_folder="ForgeSoldier", asset_id="forge_soldier_lv2",
+                   controller="Unit", ground_row=SOLDIER_GROUND_ROW)
+    export_animation(soldier_idle, animation="idle", durations_ms=SOLDIER_IDLE_DURATIONS_MS, **soldier)
+    export_animation(soldier_attack, animation="attack", durations_ms=SOLDIER_ATTACK_DURATIONS_MS,
+                     loop=False, impact_frame=SOLDIER_ATTACK_IMPACT_FRAME, **soldier)
+    imp = dict(category="Enemies", asset_folder="Imp", asset_id="imp", controller="Unit", ground_row=IMP_GROUND_ROW)
+    export_animation(imp_idle, animation="idle", durations_ms=IMP_IDLE_DURATIONS_MS, **imp)
+    export_animation(imp_attack, animation="attack", durations_ms=IMP_ATTACK_DURATIONS_MS,
+                     loop=False, impact_frame=IMP_ATTACK_IMPACT_FRAME, **imp)
 
     royal = PRESETS["real"]
     for name, frames, durations in (

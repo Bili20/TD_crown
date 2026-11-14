@@ -27,17 +27,16 @@ pip install pillow
 python balista.py
 ```
 
-Os spritesheets gerados saem em `ArtSource/` (ignorados pelo git); copie o final para `Assets/_Project/Art/`.
+Os scripts gravam os sheets direto em `Assets/_Project/Art/{categoria}/{Asset}/` e registram cada um no `Assets/_Project/Art/art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto). Previews (GIFs, lineups) ficam em `ArtSource/`, ignorados pelo git.
 
 **Um arquivo por animação:** `{asset_id}_{animação}.png` com os frames numa linha (`imp_idle.png`, `balista_turret_lv1_attack.png`). Nomes de animação permitidos e regras completas na Art Bible §8.
 
-### Fatiamento na Unity
+### Animações na Unity
 
-O `PixelArtImportPostprocessor` aplica as configurações de import na primeira importação. O slice é feito no Sprite Editor → **Grid By Cell Size**, pivô **Bottom Center**:
+Depois de rodar um script de arte, use **TD Crown → Arte → Gerar animações**. O menu:
 
-| Sheet | Célula |
-|---|---|
-| unidades e inimigos pequenos | 16×16 |
-| base de torre | 32×48 |
-| arma + operador da torre | 20×16 |
-| projétil | 8×8 |
+- fatia cada sheet do manifesto (pivô no chão do personagem ou na cintura da besta);
+- cria um clip por arquivo (`Assets/_Project/Animation/{categoria}/{asset_id}/{asset_id}_{animação}.anim`) com a duração de cada frame;
+- cria um override por asset (`{asset_id}.overrideController`) sobre os controllers base `Unit`, `TowerTurret` e `TowerBase`.
+
+Rodar de novo atualiza tudo no lugar, sem perder referências. O relatório no Console mostra o `attackWindup` de cada ataque e a âncora da besta em cada base de torre.

@@ -1,5 +1,6 @@
 from dataclasses import dataclass, replace
 from PIL import Image
+from art_export import export_animation, export_directions
 from pixel_canvas import Ramp, Canvas, Layer, stamp, line_pixels, ellipse_pixels, save_spritesheet, save_preview_gif
 from style_test import PLAYER, PLAYER_COLORS, PRESETS, BACKGROUND, REGION1, recolor
 
@@ -193,6 +194,7 @@ TURRET_FIRE = [
     TurretPose(bolt="reloading"),                               # recarrega
 ]
 TURRET_FIRE_DURATIONS_MS = [140, 60, 120, 200]
+TURRET_FIRE_IMPACT_FRAME = 1
 
 
 # --- Bases -----------------------------------------------------------------------------------------
@@ -396,10 +398,19 @@ if __name__ == "__main__":
 
     for level in (1, 2, 3):
         base_frames = [draw_base(level, wave) for wave in BASE_IDLE_WAVES]
-        # Um arquivo por animação (Art Bible §8): {asset_id}_{animação}.png, uma linha de frames.
-        save_spritesheet([base_frames], f"balista_base_lv{level}_idle.png")
-        save_spritesheet([[draw_turret(level, pose) for pose in TURRET_IDLE]], f"balista_turret_lv{level}_idle.png")
-        save_spritesheet([[draw_turret(level, pose) for pose in TURRET_FIRE]], f"balista_turret_lv{level}_attack.png")
+        # Um arquivo por animação (Art Bible §8), gravado direto no projeto e registrado no art-manifest.json.
+        tower = dict(category="Towers", asset_folder="Balista")
+        turret_anchor = (LEVELS[level].turret_x + TURRET_WIDTH // 2 - BASE_WIDTH // 2,
+                         GROUND_Y + 1 - LEVELS[level].rail_top_y)
+        export_animation(base_frames, asset_id=f"balista_base_lv{level}", animation="idle",
+                         durations_ms=BASE_IDLE_DURATIONS_MS, controller="TowerBase", ground_row=GROUND_Y,
+                         turret_anchor_px=turret_anchor, **tower)
+        turret = dict(asset_id=f"balista_turret_lv{level}", controller="TowerTurret", ground_row=WAIST_ROW, **tower)
+        export_animation([draw_turret(level, pose) for pose in TURRET_IDLE], animation="idle",
+                         durations_ms=TURRET_IDLE_DURATIONS_MS, **turret)
+        export_animation([draw_turret(level, pose) for pose in TURRET_FIRE], animation="attack",
+                         durations_ms=TURRET_FIRE_DURATIONS_MS, loop=False,
+                         impact_frame=TURRET_FIRE_IMPACT_FRAME, **turret)
         idle = [on_background(compose(level, wave, pose, royal)) for wave, pose in zip(BASE_IDLE_WAVES, TURRET_IDLE)]
         save_preview_gif(idle, f"balista_lv{level}_idle.gif", 6, TURRET_IDLE_DURATIONS_MS, BACKGROUND)
         fire = [on_background(compose(level, 0, pose, royal)) for pose in TURRET_FIRE]
@@ -408,5 +419,5 @@ if __name__ == "__main__":
     turret_contact = [recolor(draw_turret(level, pose), royal) for level in (1, 2, 3) for pose in TURRET_FIRE]
     row_of(turret_contact, gap=2, scale=6).save("balista_fire_contact.png")
     bolts = [draw_bolt(direction) for direction in BOLT_DIRECTIONS.values()]
-    save_spritesheet([bolts], "balista_bolt_directions.png")
+    export_directions(bolts, category="Projectiles", asset_folder="BalistaBolt", asset_id="balista_bolt")
     row_of([recolor(bolt, royal) for bolt in bolts], gap=2, scale=8).save("balista_bolts_preview.png")

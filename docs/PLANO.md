@@ -57,8 +57,9 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
 - [x] Primeiros sprites: soldado da Forja nv2, Diabrete, Balista nv1–nv3 e virote.
 - [ ] Os quatro `.asmdef` da arquitetura (`TDCrown.Core` com `noEngineReferences`).
 - [x] Teste do Animator com um sprite do Diabrete (controller `Triangle`, clip `Idle`).
-- [ ] Scripts de `ArtSource/` escrevendo o `art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto).
-- [ ] **TD Crown → Arte → Gerar animações**: fatia os sheets, cria clips e overrides; controllers base `Unit`, `TowerTurret` e `TowerBase`.
+- [x] Scripts de `ArtSource/` escrevendo o `art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto) e os sheets direto em `Assets/_Project/Art`.
+- [x] **TD Crown → Arte → Gerar animações** (`AnimationGenerator`): fatia os sheets, cria clips e overrides; controllers base `Unit`, `TowerTurret` e `TowerBase`.
+- [ ] Rodar o gerador no Editor e conferir o relatório no Console.
 - [ ] Trocar o teste pelos clips gerados e apagar os sheets antigos `*_sheet.png`.
 - [ ] Pacote Pipeline (`unity pipeline install`) para o Claude dirigir o Editor pelo Unity CLI.
 - [ ] Pixel Perfect Camera (640×360, PPU 16), Custom Axis `(0, 1, 0)` e as camadas de sorting.
