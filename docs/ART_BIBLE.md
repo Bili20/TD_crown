@@ -42,7 +42,10 @@
 - **Rosto:** 4 px de pele com os olhos como pixels escuros nas laterais; pele com 1 px de luz no centro.
 - **Mãos e armas:** mãos de 1 px de pele segurando a arma; armas grandes, retas (vertical ou horizontal, nunca diagonal) e em cor clara. Espada = lâmina de 1 px + guarda de 3 px + cabo e pomo escuros. Escudo = bloco de metal com risco central escuro.
 - **Pluma do time:** toda unidade do jogador tem uma peça na cor primária no topo (pluma, flâmula, capuz) para a cor do time aparecer acima da multidão.
+- **Elmo com pluma é só para militares** (soldados da Forja e operador da Balista). Os ofícios evoluem por chapéu, roupa e ferramenta, e cada ofício tem o seu: ferreiro de lenço amarrado, sineiro de chapéu de aba, alquimista de capuz/touca com óculos/chapéu cônico. Duas torres nunca repetem o mesmo boneco no mesmo nível.
 - **Demônios:** olhos no acento (`HELLFIRE`), chifres no tom claro da rampa, asas de membrana escura com nervura no tom base.
+- **Inimigos grandes saem do chibi.** De `unit_large` para cima: cabeça pequena afundada entre os ombros, ombros e braços enormes, cintura estreita. Ao lado dos diabretes cabeçudos, a diferença de massa já diz "tanque". Quanto maior o inimigo, mais detalhe (placas, rebites, brasas nas juntas), sempre com 3 materiais + acento no máximo.
+- **Quadrúpedes corredores** (Cão Infernal): forma baixa e comprida (~1,3× mais larga que alta), cabeça baixa à frente. A pose base já é **meio-galope** com as patas abertas, porque o idle toca enquanto o inimigo anda e o pulo procedural vende a corrida. Pernas próximas no tom base com coxa de 2 px; pernas do lado de longe no tom escuro.
 - **Materiais por figura:** no máximo 3 rampas mais pele e acento.
 - **Sombra no chão:** elipse `SHADOW_BLOB` com 60–70% da largura da figura, 2–3 px de altura, desenhada separada (objeto próprio) para acompanhar o pulo procedural sem subir junto.
 - **Torres:** cada nível muda a silhueta (altura, telhado, bandeira, estrutura), não só detalhes. Especializações têm uma peça marcante exclusiva.
@@ -65,6 +68,10 @@
   - Torre que **não invoca**: tem um **operador** visível no topo, cortado na cintura pelo parapeito, que também evolui (ex.: Balista — Recruta de gorro de pano → Besteiro de chapéu de ferro com pluma → Mestre-Balisteiro com elmo, guardas de bochecha, ombreiras e tabardo com emblema).
   - O operador anima junto com a arma: respira no idle e participa do disparo (firma o corpo, recarrega).
   - Especializações trocam o operador por uma variação própria (a definir por torre).
+  - Decisões por torre (16/11):
+    - **Forja:** não tem camada de cima. Um **ferreiro martelando a bigorna** faz parte da base e anima no idle, junto da fornalha em `HOLY` e da fumaça. Ferreiro: aprendiz de gorro → ferreiro de touca e avental de couro → mestre-ferreiro de chapéu com pluma, avental e braçadeiras. Soldados: nv1 recruta (gorro de pano, espada curta, broquel de madeira, sem metal), nv2 chapéu de ferro com pluma, nv3 elmo completo, ombreiras e escudo heráldico com o emblema.
+    - **Campanário:** mantém base + camada de cima (sino + sineiro), **sem flipX**, para todas as torres terem a mesma estrutura de view. O sineiro **bate no sino com um malho** de madeira; o sino fica ao lado dele e balança no `attack`. O sino cresce por nível (5, 7 e 9 px de largura). No nv2 e nv3 o telhado de ardósia fica acima da camada de cima, apoiado em pilares caiados.
+    - **Alquimista:** o operador arremessa e vira com flipX. Aprendiz de capuz (capuz na primária) → alquimista de avental de couro e luvas → mestre de chapéu cônico (primária) com aba (secundária) e manto. O frasco erguido na mão é de vidro com líquido `ACID`. O nv2 tem o telhado do time atrás do operador, com a janela escura do sótão para o capuz não sumir contra o telhado; o nv3 tem a cúpula de cobre atrás dele.
 - **Ponto de construção vazio:** base de entulho/pedra com placa de ícone; deve ler como "aqui dá para construir" a 1×.
 - **Legibilidade de time:** jogador = cores do preset (azul/dourado por padrão) e formas retas; demônios = vermelho, roxo e fogo, formas curvas e pontiagudas.
 - **Time nunca só por cor** (o dourado do jogador e o laranja dos demônios se confundem em deuteranopia/protanopia): forma e acessório distinguem os times, a barra de vida do jogador tem ponta de escudo e há um preset de recolor para daltonismo (`daltonismo`). Testar sprites novos no Color Oracle.
@@ -90,7 +97,8 @@ Todo asset do jogador é desenhado **só com os 8 cinzas exatos** da paleta `pla
 - **Cores fixas** (não recolorem): pele (`SKIN`) e luz sagrada (`HOLY`). O shader deixa passar pixels com saturação acima de 0,15.
 - Nunca usar um cinza fora dos 8 valores: um tom errado vira o índice errado no jogo.
 - **Regra do shader:** só é recolorido o pixel de **cinza neutro** (R, G e B iguais, tolerância 2). Qualquer cor com tom passa direto — por isso pele, madeira, pedra e ferro ficam com a cor natural mesmo dentro de um asset do jogador.
-- **Rampas fixas permitidas** em assets do jogador: `SKIN`, `HOLY`, `WOOD`, `STONE`, `IRON`, `STRING` (corda/linha) e os materiais de torre `DARK_STONE`, `BRICK`, `WHITEWASH`, `SLATE`, `BRONZE`, `COPPER`, `GLASS`, `MARBLE`, `STRAW`. Todas têm leve tom (validado no JSON) e nunca podem ser trocadas por cinza puro.
+- **Rampas fixas permitidas** em assets do jogador: `SKIN`, `HOLY`, `WOOD`, `STONE`, `IRON`, `STRING` (corda/linha) e os materiais de torre `DARK_STONE`, `BRICK`, `WHITEWASH`, `SLATE`, `BRONZE`, `COPPER`, `GLASS`, `MARBLE`, `STRAW`, mais `ACID` (líquido do Alquimista e a poça; proposta de 16/11, aguarda aprovação da prancha). Todas têm leve tom (validado no JSON) e nunca podem ser trocadas por cinza puro.
+- **`ACID`** é um verde-limão saturado: contrasta em valor com a terra do caminho e em saturação com a grama, e não se confunde com o `HELLFIRE` dos demônios. Em áreas grandes (a poça) o preenchimento é o tom escuro; base e claro ficam só na borda, nas ondulações e nas bolhas, para a poça não virar o objeto mais claro da cena.
 - Presets no JSON (`recolor.presets`): `real` (padrão), `rubi`, `floresta`, `daltonismo` (azul e branco, sem amarelo/laranja), e três patentes da Veterania da Forja (recruta → sargento → capitão; patente máxima 3).
 
 ### 4.2 Inimigos — cor direta
@@ -98,7 +106,8 @@ Demônios usam cor normal (sem recolor). Rampas da região 1 em `region1_vale`:
 - `DEMON` — pele e corpo de diabretes, cães e brutamontes.
 - `HELLFIRE` — acento: olhos, chifres incandescentes, fogo.
 - `CULT_ROBE` — cultistas (sacerdotes que seguiram Orvan).
-- `GARGOYLE` — gárgulas e pedra corrompida.
+- `GARGOYLE` — gárgulas e pedra corrompida. Atenção: hoje tem os mesmos valores do `IRON` e fica perto da pedra do cenário; revisar antes de desenhar a Gárgula (proposta: cinza arroxeado com rachaduras em `HELLFIRE`).
+- `BLACK_IRON` — ferro negro das placas cravadas no Brutamontes (proposta de 16/11, aguarda aprovação da prancha). Mais escuro e frio que o `IRON` do jogador, para o metal dos demônios não parecer equipamento do reino.
 
 ### 4.3 Cenário — região 1
 `GRASS`, `DIRT` (caminho), `STONE`, `WOOD`. O caminho dos inimigos sempre contrasta com a grama em valor (mais claro ou mais escuro), não só em matiz.
@@ -124,10 +133,15 @@ Regiões 2–4 ainda sem paleta (§10).
 | `tower` | 32×48 | 44 | 28–44 | base das torres, todos os níveis |
 | `tower_turret` | 20×16 | — (cintura na linha 12) | — | arma + operador sobre o parapeito |
 | `build_spot` | 32×32 | 28 | — | ponto de construção vazio |
-| `projectile` | 8×8 | — | — | virote, frasco, pena |
+| `projectile` | 8×8 | — | — | virote, frasco, pena. O frasco é um sprite só, sem rotação: voa em arco com sombra no chão |
+| `zone` | 32×32 | — (pivô Center) | — | zona no chão de 1 tile de raio (poça do Alquimista), camada de sorting `GroundFx`. O contorno é a área do sim (círculo de 30 px), com mossas para não ler como disco |
 | `tile` | 16×16 | — | — | terreno |
 
 Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
+
+Altura-alvo das torres por nível (da base ao topo da flâmula): **nv1 ~25–28 px, nv2 ~34–40 px, nv3 até 46 px**. Torre cuja nv2 já ocupa o quadro inteiro não tem para onde crescer no nv3.
+
+Limite de cores: 16 por quadro, 20 em assets do jogador. A base da Forja, que tem o ferreiro embutido, pode chegar a 26.
 
 ## 6. Animação
 
@@ -203,5 +217,6 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 - **Tileset:** decidir se o terreno será desenhado ou adaptado de pacote comprado (conferir licença comercial).
 - **Ícones de itens:** vêm do pacote comprado — definir se ficam como estão ou passam por ajuste de paleta para casar com o jogo.
 - **UI:** proposta de estilo (painel de Preparação + HUD) e escolha das fontes.
-- **Soldado da Forja nv1 e nv3**, e os operadores das outras torres (Campanário: sineiro; Alquimista: alquimista; Relicário: monge; Falcoaria: falcoeiro).
+- **Lote da demo pública (16/11), poses base em revisão:** Forja nv1–nv3 com o ferreiro, soldados nv1 e nv3, Campanário nv1–nv3 com o sineiro, Alquimista nv1–nv3 com o operador, frasco, poça, Cão Infernal e Brutamontes. Scripts: `forja.py`, `campanario.py`, `alquimista.py`, `inimigos_r1.py`; prancha em `prancha_demo.py`.
+- Operadores do Relicário (monge) e da Falcoaria (falcoeiro).
 - **`frame0_luminance_range`:** medir nos primeiros aprovados.

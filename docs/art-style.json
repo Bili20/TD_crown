@@ -118,6 +118,15 @@
       ],
       "waist_row": 12,
       "note": "arma + operador; operador cortado na cintura (waist_row) sobre o parapeito; vira com flipX"
+    },
+    "zone": {
+      "frame": [
+        32,
+        32
+      ],
+      "pivot": "Center",
+      "sorting_layer": "GroundFx",
+      "note": "zona no chão (poça do Alquimista): círculo do raio do sim (1 tile = 30 px de diâmetro útil), preenchimento no tom dark"
     }
   },
   "palettes": {
@@ -509,6 +518,28 @@
             122
           ],
           "shine": null
+        },
+        "ACID": {
+          "dark": [
+            70,
+            112,
+            30
+          ],
+          "base": [
+            138,
+            190,
+            44
+          ],
+          "light": [
+            196,
+            232,
+            96
+          ],
+          "shine": [
+            240,
+            252,
+            190
+          ]
         }
       },
       "fixed_ramps_allowed": [
@@ -525,7 +556,8 @@
         "COPPER",
         "GLASS",
         "MARBLE",
-        "STRAW"
+        "STRAW",
+        "ACID"
       ],
       "accent": "HOLY",
       "translucent": {}
@@ -685,6 +717,28 @@
             72
           ],
           "shine": null
+        },
+        "BLACK_IRON": {
+          "dark": [
+            40,
+            36,
+            50
+          ],
+          "base": [
+            74,
+            68,
+            88
+          ],
+          "light": [
+            116,
+            110,
+            132
+          ],
+          "shine": [
+            172,
+            168,
+            188
+          ]
         }
       },
       "aliases": {

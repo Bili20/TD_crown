@@ -354,9 +354,9 @@ Mudança em número de combate passa pela ferramenta de balanceamento (ver ARQUI
 
 | Marco | Conteúdo |
 |---|---|
-| Vertical slice | 3 fases, Balista + Forja + Campanário, Diabrete, Cão Infernal e Brutamontes, bastiões de 2 |
+| Vertical slice | fases 1–3 da região 1: Balista, Forja, Campanário e Alquimista; Diabrete, Cão Infernal e Brutamontes; bastiões de 2 |
 | Demo interna | região 1 completa: 7 fases, 6 torres, 5 inimigos, mini boss, boss, 7 itens, 2 poderes |
-| Demo pública (Steam) | fases 1–3, com o Bastião logo na fase 1 |
+| Demo pública (Steam) | fases 1–3 (o mesmo conteúdo do vertical slice), com o Bastião logo na fase 1 |
 | 1.0 | 28 fases, 6 torres + 12 especializações, ~20 inimigos, 4 mini bosses, 4 bosses, 28 itens, 4 poderes, Provação em 8 fases |
 
 Primeiro corte se apertar: as especializações mais caras (Águias, Guarda do Portão). A Falcoaria fica: a região 2 depende dela contra voadores.
