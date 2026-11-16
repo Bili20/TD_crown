@@ -1181,18 +1181,10 @@
         60,
         140
       ],
-      "note": "opcional para inimigos e unidades; sem ele o idle toca enquanto anda (andar procedural)"
+      "note": "obrigatório para todo inimigo e minion; não existe andar procedural"
     }
   },
   "procedural": {
-    "walk": {
-      "hop_px": 1,
-      "tilt_degrees": 5,
-      "squash_on_land": 0.1,
-      "steps_per_tile": 2,
-      "frequency_follows_current_speed": true,
-      "only_without_drawn_walk": true
-    },
     "death": {
       "flash_ms": 60,
       "fall_ms": 180,

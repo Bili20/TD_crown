@@ -59,7 +59,7 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
 - [x] Teste do Animator com um sprite do Diabrete (controller `Triangle`, clip `Idle`).
 - [x] Scripts de `ArtSource/` escrevendo o `art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto) e os sheets direto em `Assets/_Project/Art`.
 - [x] **TD Crown → Arte → Gerar animações** (`AnimationGenerator`): fatia os sheets, cria clips e overrides; controllers base `Unit`, `TowerTurret` e `TowerBase`.
-- [x] Estado `Walk` no controller `Unit` (bool `Moving`, volta para o clip de idle quando o asset não tem `walk`) e `groundSpeedTilesPerSecond` no manifesto. **Rodar o gerador uma vez na Unity** para o `Unit.controller` ganhar o estado.
+- [x] Estado `Walk` no controller `Unit` (bool `Moving`; avisa e usa o clip de idle quando o asset ainda não tem `walk`) e `groundSpeedTilesPerSecond` no manifesto. **Rodar o gerador uma vez na Unity** para o `Unit.controller` ganhar o estado.
 - [ ] Rodar o gerador no Editor e conferir o relatório no Console.
 - [ ] Trocar o teste pelos clips gerados e apagar os sheets antigos `*_sheet.png`.
 - [ ] Pacote Pipeline (`unity pipeline install`) para o Claude dirigir o Editor pelo Unity CLI.
@@ -95,8 +95,8 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
   - `EnemyView`, `SoldierView` e `ProjectileView`;
   - interpolação entre passos.
 - [ ] Shader `SpriteRecolor` com a textura de paleta e o `TeamPalette`. Conferir os 4 presets contra o lineup da Art Bible.
-- [ ] Animator nas views (trigger `Attack` no `TowerAttackStarted`, troca de override ao subir de nível); `ProceduralWalk`; morte procedural e sombra separada.
-  - `Moving` ligado enquanto a unidade anda; no `Walk`, `animator.speed = velocidade atual ÷ walkCycleSpeed`; `ProceduralWalk` desligado para quem tem `walk` desenhado.
+- [ ] Animator nas views (trigger `Attack` no `TowerAttackStarted`, troca de override ao subir de nível); morte procedural e sombra separada.
+  - `Moving` ligado enquanto a unidade anda; no `Walk`, `animator.speed = velocidade atual ÷ walkCycleSpeed`. Sem andar procedural.
 - [ ] HUD mínimo (vidas, ouro, onda, 1x/2x, chamar onda) e menu radial (construir, upgrade, vender) em UI Toolkit.
 - [ ] Linhas do bastião e hover do ponto vazio mostrando o Dom.
 - [ ] As fases 1–3 (o slice é o conteúdo da demo pública) com Diabrete, Cão Infernal e Brutamontes.
@@ -115,8 +115,8 @@ Pela Art Bible, um arquivo por animação.
 - [ ] Alquimista nv1–nv3 (tijolo, cobre, vidro) com o operador, o frasco e a poça ácida.
 - [x] Cão Infernal (16x16, `HOUND_FUR`): idle, galope (`walk`) e ataque.
 - [x] Diabrete reanimado em rig: idle e ataque novos, `walk` desenhado.
-- [ ] Brutamontes refeito do zero, com `walk`: escolher entre as 3 silhuetas (Art Bible §10) e animar.
-- [ ] Decidir se os soldados da Forja também ganham `walk`.
+- [x] Brutamontes refeito (o carcereiro, silhueta B): idle, walk e ataque. Falta a aprovação do dono.
+- [ ] `walk` dos soldados da Forja nv1–nv3 (todo minion anda desenhado; o nv2 aprovado também precisa).
 - [ ] Tileset da região 1, ponto de construção vazio e base de bastião.
 - [ ] Efeitos básicos: impacto, pulso do Campanário, morte, moedas.
 - [ ] Proposta de estilo da UI em vetor (Preparação e HUD) e escolha das fontes.

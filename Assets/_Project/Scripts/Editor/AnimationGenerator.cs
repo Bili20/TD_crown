@@ -242,7 +242,8 @@ namespace TDCrown.EditorTools
                 clipsByState.TryGetValue(stateName, out var clip);
                 if (clip == null && stateName == "Walk" && clipsByState.TryGetValue("Idle", out var idleClip))
                 {
-                    // Sem andar desenhado, o idle toca enquanto a unidade anda e o andar procedural faz o resto.
+                    // Todo inimigo e minion precisa de walk; o idle só tampa o buraco até o sheet chegar.
+                    report.AppendLine($"AVISO {firstSheet.assetId}: falta o sheet de walk; usando o idle no estado Walk");
                     clip = idleClip;
                 }
                 if (clip == null)

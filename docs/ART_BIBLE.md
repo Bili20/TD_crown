@@ -44,11 +44,11 @@
 - **Pluma do time:** toda unidade do jogador tem uma peça na cor primária no topo (pluma, flâmula, capuz) para a cor do time aparecer acima da multidão.
 - **Elmo com pluma é só para militares** (soldados da Forja e operador da Balista). Os ofícios evoluem por chapéu, roupa e ferramenta, e cada ofício tem o seu: ferreiro de lenço amarrado, sineiro de chapéu de aba, alquimista de capuz/touca com óculos/chapéu cônico. Duas torres nunca repetem o mesmo boneco no mesmo nível.
 - **Demônios:** olhos no acento (`HELLFIRE`), chifres no tom claro da rampa, asas de membrana escura com nervura no tom base. **O olho é sempre o pixel mais claro do inimigo**: brasas do corpo param em `HELLFIRE.base` (no Cão, em `HELLFIRE.dark`), senão o ponto focal pula da cabeça para o corpo e vira um segundo par de olhos. Faíscas de golpe podem passar disso, porque duram um frame.
-- **Brutamontes em redesenho (16/11):** o primeiro (de frente, simétrico, cabeça-caixa e clava num palito) ficou duro e com cara de robô. A versão nova parte de massa orgânica e assimétrica; 3 silhuetas aguardam escolha (§10).
+- **Brutamontes — o carcereiro (silhueta B, escolhida em 16/11):** corcunda alta atrás, cabeça miúda baixa à frente com um chifre em cunha de queratina escura (rampa `BLACK_IRON`, sem ponta branca: ela virava o pixel mais claro e lia como pavio) varrido para trás, ombreira com espigão, colar, algemas e cinto em `BLACK_IRON`, brasas no cotovelo e no cinto. Uma bola de ferro com espigão presa por corrente na algema do braço de trás (a mão fica à frente da bola, para a corrente aparecer com 3 elos ou mais): arrastada atrás no `walk`, girada por cima da cabeça e batida no chão à frente no ataque. O tronco é uma massa só (união suave de elipses), e tronco, quadril e cabeça andam em pixel inteiro para a luz não "ferver". O primeiro desenho (de frente, simétrico, cabeça-caixa e clava num palito) ficou duro e com cara de robô e foi descartado.
 - **Inimigos grandes saem do chibi.** De `unit_large` para cima: cabeça pequena afundada entre os ombros, ombros e braços enormes, cintura estreita. Ao lado dos diabretes cabeçudos, a diferença de massa já diz "tanque". Quanto maior o inimigo, mais detalhe (placas, rebites, brasas nas juntas), sempre com 3 materiais + acento no máximo.
 - **Quadrúpedes** (Cão Infernal, aprovado em 16/11): de perfil, virados para a direita. Corcunda tipo hiena (ombro alto, quadril baixo, cabeça à frente do cangote), tufos quebrando o dorso e cauda curta caída. O idle é **em pé, respirando**; a corrida é o `walk` desenhado (galope), não mais a pose base. Pernas de perto no tom do pelo, pernas de longe em `OUTLINE`.
 - **Materiais por figura:** no máximo 3 rampas mais pele e acento.
-- **Sombra no chão:** elipse `SHADOW_BLOB` com 60–70% da largura da figura, 2–3 px de altura, desenhada separada (objeto próprio) para acompanhar o pulo procedural sem subir junto. O topo da elipse fica **na linha dos pés ou abaixo**, nunca sobre as pernas: o `SHADOW_BLOB` é quase o `OUTLINE`, e numa figura escura (Cão) a sombra em cima das pernas apaga as patas.
+- **Sombra no chão:** elipse `SHADOW_BLOB` com 60–70% da largura da figura, 2–3 px de altura, desenhada separada (objeto próprio), parada no chão enquanto o corpo sobe e desce nos frames. O topo da elipse fica **na linha dos pés ou abaixo**, nunca sobre as pernas: o `SHADOW_BLOB` é quase o `OUTLINE`, e numa figura escura (Cão) a sombra em cima das pernas apaga as patas.
 - **Torres:** cada nível muda a silhueta (altura, telhado, bandeira, estrutura), não só detalhes. Especializações têm uma peça marcante exclusiva.
   - **Cada torre tem um material próprio**, mantido do nv1 ao nv3 (do simples ao nobre dentro desse material). Como todas as torres usam a cor do time, o material é o que diferencia uma torre da outra de longe. Tabela aprovada em 14/11:
 
@@ -152,13 +152,13 @@ Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e *
 
 | Tipo | Animações desenhadas | Frames | Duração |
 |---|---|---|---|
-| Unidades e inimigos | idle, ataque; **andar (`walk`) opcional** | idle 4–6; ataque 4–7; andar 4–8 | idle 130–260 ms; frame do golpe ~70 ms; andar 60–140 ms |
+| Unidades e inimigos | idle, **andar (`walk`)** e ataque, os três obrigatórios | idle 4–6; ataque 4–7; andar 4–8 | idle 130–260 ms; frame do golpe ~70 ms; andar 60–140 ms |
 | Torres | idle (bandeira, fumaça, sino) e disparo quando houver peça móvel | 4–6 | 150–250 ms |
 | Bosses | idle, ataque, assinatura | 4–8 cada | igual às unidades |
 
-**Andar desenhado (`walk`, desde 16/11).** Inimigos e unidades podem ter o ciclo de andar em frames. É opcional: quem não tem continua tocando o idle enquanto anda, com o andar procedural.
+**Andar desenhado (`walk`, obrigatório desde 16/11).** Todo inimigo e toda unidade que anda (soldados da Forja, minions) tem o ciclo de andar em frames. Não existe mais andar procedural: nada de pulo, inclinação ou squash por código; o balanço está nos frames.
 - **Velocidade de referência:** cada ciclo é desenhado para uma velocidade no chão em que os pés não deslizam. O script mede o recuo dos pés apoiados e grava `groundSpeedTilesPerSecond` no manifesto. No jogo, o Animator toca o `walk` a `velocidade atual ÷ referência`, então lentidão e atordoamento aparecem sozinhos. Desenhe para uma velocidade perto da do GDD: acima de ~1,5× o ciclo fica corrido.
-- **Com `walk`, o andar procedural fica desligado** (sem pulo, inclinação nem squash): o balanço já está nos frames e somar os dois deixa o sprite tremendo; a inclinação ainda gira pixel e cria mixels.
+- **Por que não procedural:** pulo e squash por código somados ao balanço desenhado deixam o sprite tremendo, e a inclinação gira pixel e cria mixels.
 - **Técnica** (a mesma do Cão Infernal e do Diabrete): o asset é um rig de partes e cada animação é uma lista de poses. Para não sair duro:
   - nada se move junto: ombro antes do quadril, cabeça um frame depois do corpo, ponta da cauda ou da asa atrasada em relação à base (forma muda, não só lugar);
   - pé apoiado recua na velocidade do chão; o pé no ar volta rápido;
@@ -168,7 +168,6 @@ Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e *
   - **enxame fora de sincronia:** cada instância começa o idle e o `walk` num frame aleatório, senão dez Diabretes batem as asas juntos.
 
 **Procedural (código, sem frames):**
-- **Andar** (só para quem não tem `walk`): pulo de 1 px, inclinação ±5°, squash de 10% no pouso, 2 passos por tile; a frequência acompanha a velocidade **atual** (lentidão e congelamento aparecem sozinhos).
 - **Morte:** flash branco 60 ms → queda/achatamento 180 ms → fade 200 ms + ~6 partículas.
 - **Dano:** hit flash de 60 ms no mesmo shader do recolor.
 
@@ -249,8 +248,8 @@ Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e *
 - **UI:** proposta de estilo (painel de Preparação + HUD) e escolha das fontes.
 - **Bases das 4 torres refeitas no pipeline novo (16/11)** e exportadas (idle); falta aprovação do dono. Camadas de cima do Campanário e do Alquimista, soldados nv1/nv3, Brutamontes, frasco e poça ainda sem animação.
 - **Lote da demo pública (16/11), poses base em revisão:** Forja nv1–nv3 com o ferreiro, soldados nv1 e nv3, Campanário nv1–nv3 com o sineiro, Alquimista nv1–nv3 com o operador, frasco e poça. Scripts: `forja.py`, `campanario.py`, `alquimista.py`; prancha em `prancha_demo.py`.
-- **Brutamontes refeito do zero (16/11):** 3 silhuetas em 24×24 aguardam escolha — **A** gorila de ferro (anda nos punhos, carapaça de ferro negro com espinhos, cabeça baixa à frente); **B** carcereiro (corcunda, cabeça miúda de um chifre, bola de ferro na corrente arrastando à frente); **C** tronco cravado de pregos no ombro. Todos com `walk` desenhado. O desenho antigo continua em `inimigos_r1.py` só até a escolha.
-- **`walk` dos soldados da Forja:** opcional; decidir depois de ver o Diabrete e o cão andando no jogo.
+- **Brutamontes carcereiro (16/11):** `brutamontes_idle` (6 frames), `brutamontes_walk` (8 × 140 ms, 0,45 tile/s), `brutamontes_attack` (7 frames, impacto no frame 3, windup de 430 ms) exportados; aguardam aprovação do dono. Script: `brutamontes.py` (o `inimigos_r1.py` antigo saiu).
+- **`walk` que falta:** soldados da Forja nv1–nv3 (o nv2 aprovado também). Daqui para frente nenhum inimigo ou minion é aprovado sem `walk`.
 - **Nome do sheet do Diabrete:** o asset é `imp`, mas o id fixo do inimigo é `diabrete`. Renomear muda os GUIDs dos clips e do override; decidir antes de criar o prefab.
 - Operadores do Relicário (monge) e da Falcoaria (falcoeiro).
 - **`frame0_luminance_range`:** medir nos primeiros aprovados.

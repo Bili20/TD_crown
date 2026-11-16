@@ -13,7 +13,7 @@ import balista
 import forja
 import campanario
 import alquimista
-import inimigos_r1
+import brutamontes
 import cao_infernal
 from animate_v2 import draw_soldier as draw_soldier_lv2, SoldierPose
 
@@ -50,7 +50,7 @@ def units(preset_name: str) -> list[tuple[str, Image.Image]]:
         ("soldado 3", soldier_with_shadow(recolor(forja.draw_soldier(forja.SOLDIER_VETERAN), preset))),
         ("diabrete", soldier_with_shadow(imp)),
         ("cao", cao_infernal.with_blob(cao_infernal.final_frame(cao_infernal.IDLE[0]), cao_infernal.IDLE[0])),
-        ("brutamontes", inimigos_r1.with_shadow(inimigos_r1.draw_brute(), inimigos_r1.BRUTE_GROUND_ROW, 8.5)),
+        ("brutamontes", brutamontes.with_blob(brutamontes.final_frame(brutamontes.REST))),
         ("virote", bolt),
         ("frasco", alquimista.draw_flask()),
         ("poca", alquimista.draw_puddle()),
@@ -143,7 +143,7 @@ def scene_3x() -> Image.Image:
     imp = soldier_with_shadow(Image.open("../Assets/_Project/Art/Enemies/Imp/imp_idle.png").convert("RGBA").crop((0, 0, 16, 16)))
     # Sombra com o topo na linha dos pés: centrada acima dela, cobre as pernas do cão escuro.
     hound = cao_infernal.with_blob(cao_infernal.final_frame(cao_infernal.IDLE[0]), cao_infernal.IDLE[0])
-    brute = inimigos_r1.with_shadow(inimigos_r1.draw_brute(), inimigos_r1.BRUTE_GROUND_ROW, 8.5)
+    brute = brutamontes.with_blob(brutamontes.final_frame(brutamontes.REST))
     soldier = soldier_with_shadow(recolor(draw_soldier_lv2(SoldierPose()), royal))
     veteran = soldier_with_shadow(recolor(forja.draw_soldier(forja.SOLDIER_VETERAN), royal))
     walkers = [

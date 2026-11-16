@@ -2,6 +2,78 @@
   "version": 1,
   "sheets": [
     {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_attack.png",
+      "assetId": "brutamontes",
+      "animation": "attack",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        160,
+        200,
+        70,
+        80,
+        120,
+        140,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 3,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_idle.png",
+      "assetId": "brutamontes",
+      "animation": "idle",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        220,
+        180,
+        260,
+        200,
+        200,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_walk.png",
+      "assetId": "brutamontes",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.446
+    },
+    {
       "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_attack.png",
       "assetId": "cao_infernal",
       "animation": "attack",
