@@ -186,7 +186,7 @@ Um único pipeline para todo número de torre e unidade, nesta ordem: **base →
 
 ## 5. Inimigos
 
-**Apresentação (decidido em 16/11):** todo inimigo e toda unidade que anda (soldados da Forja e qualquer minion invocado) tem `idle`, `walk` e `attack` desenhados. Não existe andar procedural (o pulo e a inclinação por código saíram): o movimento no caminho é só a posição, e o balanço está nos frames do `walk`.
+**Apresentação (decidido em 16/11):** todo inimigo e toda unidade que anda (soldados da Forja e qualquer minion invocado) tem `idle`, `walk` e `attack` desenhados. Não existe andar procedural (o pulo e a inclinação por código saíram): o movimento no caminho é só a posição, e o balanço está nos frames do `walk`. O passo do soldado da Forja foi desenhado para **1,5 tile/s**; a velocidade do soldado ainda não tem número aqui e entra no playtest do vertical slice.
 
 ### 5.1 Região 1
 

@@ -64,13 +64,14 @@ def build(rows: list[str], colors: dict) -> Image.Image:
 
 
 def on_shadow(sprite: Image.Image, shadow_left: int, shadow_width: int, shadow_top: int) -> Image.Image:
-    # A sombra é objeto separado no jogo (não pula junto com o andar procedural); aqui só para preview.
+    # A sombra é objeto separado no jogo (fica no chão enquanto o corpo balança nos frames); aqui só para preview.
     framed = Image.new("RGBA", sprite.size, (0, 0, 0, 0))
     shadow_color = (*REGION1.color("SHADOW_BLOB"), 255)
-    for x in range(shadow_left + 1, shadow_left + shadow_width - 1):
-        framed.putpixel((x, shadow_top), shadow_color)
-    for x in range(shadow_left, shadow_left + shadow_width):
-        framed.putpixel((x, shadow_top + 1), shadow_color)
+    for row, (left, right) in ((shadow_top, (shadow_left + 1, shadow_left + shadow_width - 1)),
+                               (shadow_top + 1, (shadow_left, shadow_left + shadow_width))):
+        if row < sprite.height:
+            for x in range(left, right):
+                framed.putpixel((x, row), shadow_color)
     framed.alpha_composite(sprite)
     return framed
 

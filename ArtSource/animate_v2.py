@@ -1,9 +1,8 @@
-from dataclasses import dataclass, replace
+"""Grids e poses do soldado da Forja nv2 (aprovado em 10/11). A exportação fica em soldados_forja.py."""
+from dataclasses import dataclass
 from PIL import Image
-from pixel_canvas import Canvas, Layer, stamp, save_preview_gif
-from art_export import export_animation
-from style_test import PLAYER_COLORS, PRESETS, BACKGROUND, REGION1, recolor
-from style_test_v2 import on_shadow
+from pixel_canvas import Canvas, Layer, stamp
+from style_test import PLAYER_COLORS
 
 FRAME_SIZE = 16
 
@@ -95,36 +94,5 @@ SOLDIER_ATTACK_IMPACT_FRAME = 1
 # O Diabrete saiu daqui: ele é animado e exportado por diabrete.py.
 
 
-def preview_frames(frames, shadow_left, shadow_width, shadow_top):
-    return [on_shadow(frame, shadow_left, shadow_width, shadow_top) for frame in frames]
-
-
 if __name__ == "__main__":
-    soldier_idle = [draw_soldier(pose) for pose in SOLDIER_IDLE]
-    soldier_attack = [draw_soldier(pose) for pose in SOLDIER_ATTACK]
-
-    # Um arquivo por animação (Art Bible §8), gravado direto no projeto e registrado no art-manifest.json.
-    soldier = dict(category="PlayerUnits", asset_folder="ForgeSoldier", asset_id="forge_soldier_lv2",
-                   controller="Unit", ground_row=SOLDIER_GROUND_ROW)
-    export_animation(soldier_idle, animation="idle", durations_ms=SOLDIER_IDLE_DURATIONS_MS, **soldier)
-    export_animation(soldier_attack, animation="attack", durations_ms=SOLDIER_ATTACK_DURATIONS_MS,
-                     loop=False, impact_frame=SOLDIER_ATTACK_IMPACT_FRAME, **soldier)
-
-    royal = PRESETS["real"]
-    for name, frames, durations in (
-        ("forge_soldier_idle", soldier_idle, SOLDIER_IDLE_DURATIONS_MS),
-        ("forge_soldier_attack", soldier_attack, SOLDIER_ATTACK_DURATIONS_MS),
-    ):
-        recolored = [recolor(frame, royal) for frame in frames]
-        save_preview_gif(preview_frames(recolored, 3, 9, 14), f"{name}.gif", 10, durations, BACKGROUND)
-
-    # Folha de conferência: todos os frames ampliados, soldado já recolorido.
-    soldier_rows = [[recolor(frame, royal) for frame in soldier_idle], [recolor(frame, royal) for frame in soldier_attack]]
-    contact = Image.new("RGBA", (FRAME_SIZE * 4 * 2 + 8, FRAME_SIZE * 2), (*BACKGROUND, 255))
-    for row_index, row in enumerate(soldier_rows):
-        for column_index, frame in enumerate(row):
-            contact.alpha_composite(frame, (column_index * FRAME_SIZE, row_index * FRAME_SIZE))
-    for row_index, row in enumerate([imp_idle, imp_attack]):
-        for column_index, frame in enumerate(row):
-            contact.alpha_composite(frame, (FRAME_SIZE * 4 + 8 + column_index * FRAME_SIZE, row_index * FRAME_SIZE))
-    contact.resize((contact.width * 8, contact.height * 8), Image.NEAREST).save("animation_contact.png")
+    print("O soldado da Forja é exportado por soldados_forja.py (idle, walk e attack dos 3 níveis).")

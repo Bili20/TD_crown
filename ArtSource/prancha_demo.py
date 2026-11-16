@@ -35,7 +35,8 @@ def towers(preset_name: str) -> list[tuple[str, Image.Image]]:
 
 
 def soldier_with_shadow(sprite: Image.Image) -> Image.Image:
-    framed = ground_shadow(16, 16, 7.5, 14, 4.5, 1.2)
+    # Sombra 1 linha abaixo dos pés: na linha dos pés ela apagava as pernas de índice 0.
+    framed = ground_shadow(16, 16, 7.5, 15.4, 4.5, 0.9)
     framed.alpha_composite(sprite)
     return framed
 

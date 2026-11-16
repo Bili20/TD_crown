@@ -116,7 +116,7 @@ Pela Art Bible, um arquivo por animação.
 - [x] Cão Infernal (16x16, `HOUND_FUR`): idle, galope (`walk`) e ataque.
 - [x] Diabrete reanimado em rig: idle e ataque novos, `walk` desenhado.
 - [x] Brutamontes refeito (o carcereiro, silhueta B): idle, walk e ataque. Falta a aprovação do dono.
-- [ ] `walk` dos soldados da Forja nv1–nv3 (todo minion anda desenhado; o nv2 aprovado também precisa).
+- [x] Soldados da Forja nv1–nv3 com idle, walk e ataque (`soldados_forja.py`); nv1 e nv3 aguardam aprovação.
 - [ ] Tileset da região 1, ponto de construção vazio e base de bastião.
 - [ ] Efeitos básicos: impacto, pulso do Campanário, morte, moedas.
 - [ ] Proposta de estilo da UI em vetor (Preparação e HUD) e escolha das fontes.

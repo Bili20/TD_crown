@@ -213,6 +213,71 @@
       "groundSpeedTilesPerSecond": 1.389
     },
     {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_attack.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "attack",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_idle.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "idle",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        240,
+        180,
+        240,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_walk.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
+    },
+    {
       "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_attack.png",
       "assetId": "forge_soldier_lv2",
       "animation": "attack",
@@ -230,7 +295,8 @@
       ],
       "loop": false,
       "impactFrame": 1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
     },
     {
       "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_idle.png",
@@ -250,7 +316,96 @@
       ],
       "loop": true,
       "impactFrame": -1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_walk.png",
+      "assetId": "forge_soldier_lv2",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_attack.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "attack",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_idle.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "idle",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        240,
+        180,
+        240,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_walk.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
     },
     {
       "sheetPath": "Assets/_Project/Art/Projectiles/BalistaBolt/balista_bolt_directions.png",

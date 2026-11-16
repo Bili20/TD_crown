@@ -345,7 +345,7 @@ SOLDIER_RECRUIT = [
     "..mm..sttsbb.w..",
     ".mnMmcbbbbba.w..",
     ".mMnmbbbbbaa.e..",
-    "..mm.dnnnndd.td.",
+    "..mm.dnnnnddtd..",
     "......bbbbb.....",
     "......oo.oo.....",
     "................",
