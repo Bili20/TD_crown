@@ -141,7 +141,7 @@ Proporção alvo: a unidade pequena tem ~1/3 da altura da torre nível 1.
 
 Altura-alvo das torres por nível (da base ao topo da flâmula): **nv1 ~25–28 px, nv2 ~34–40 px, nv3 até 46 px**. Torre cuja nv2 já ocupa o quadro inteiro não tem para onde crescer no nv3.
 
-Limite de cores: 16 por quadro, 20 em assets do jogador. A base da Forja, que tem o ferreiro embutido, pode chegar a 26.
+Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e **26 em bases de torre** (`tower`), que juntam vários materiais e às vezes gente embutida (o ferreiro da Forja). O validador lê o limite por classe em `validation.max_colors_per_size_class`.
 
 ## 6. Animação
 

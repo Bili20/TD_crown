@@ -48,13 +48,13 @@ SMITH_APPRENTICE = [
 SMITH_JOURNEYMAN = [
     "......jkj",
     ".......m.",
-    "..bbbc.m.",
-    "aabbbbbm.",
+    "..nnnn.m.",
+    "abbbbbcm.",
+    "a.nnnn.m.",
     ".otuutot.",
     "..stts.b.",
     ".bnmmnbb.",
     ".bmMMmb..",
-    ".bmmmmb..",
     ".bmmmmb..",
     "..o..o...",
 ]
@@ -183,7 +183,7 @@ def base_workshop(pose: ForgePose) -> Layer:
     fill(layer, 21, 12, 27, 12, BRICK.light)
     fill(layer, 22, 11, 26, 11, HOLY.base)
     put(layer, 24, 11, HOLY.light)
-    draw_smoke(layer, 23, 8, pose.smoke)
+    draw_smoke(layer, 23, 9, pose.smoke)
     # Paredes de tijolo.
     brick_wall(layer, 4, 30, 27, GROUND_Y)
     fill(layer, 4, 30, 4, GROUND_Y, BRICK.dark)
@@ -216,8 +216,8 @@ def base_barracks(pose: ForgePose) -> Layer:
         brick_wall(layer, chimney_left, 8, chimney_left + 3, 14, DARK_STONE)
         fill(layer, chimney_left - 1, 8, chimney_left + 4, 8, DARK_STONE.light)
         fill(layer, chimney_left, 7, chimney_left + 3, 7, HOLY.base)
-    draw_smoke(layer, 8, 5, pose.smoke, puff_count=2)
-    draw_smoke(layer, 22, 5, pose.smoke + 1, puff_count=2)
+    draw_smoke(layer, 8, 6, pose.smoke, puff_count=2)
+    draw_smoke(layer, 22, 6, pose.smoke + 1, puff_count=2)
     # Corpo de pedra escura.
     brick_wall(layer, 4, 16, 27, GROUND_Y, DARK_STONE)
     fill(layer, 4, 16, 4, GROUND_Y, DARK_STONE.dark)

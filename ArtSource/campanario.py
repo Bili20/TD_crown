@@ -243,7 +243,7 @@ def base_tall_tower(wave: int) -> Layer:
     fill(layer, 2, beam - 1, 29, beam - 1, SLATE.dark)
     put(layer, 15, beam - 9, BRONZE.shine)
     put(layer, 16, beam - 9, BRONZE.base)
-    draw_pennant(layer, 16, beam - 13, beam - 10, wave)
+    draw_pennant(layer, 16, beam - 12, beam - 10, wave)
     return layer
 
 

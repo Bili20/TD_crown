@@ -1150,7 +1150,10 @@
     "max_colors_per_frame": 16,
     "player_assets_only_index_or_fixed_colors": true,
     "frame0_luminance_range": null,
-    "max_colors_per_frame_player": 20
+    "max_colors_per_frame_player": 20,
+    "max_colors_per_size_class": {
+      "tower": 26
+    }
   },
   "vector": {
     "applies_to": [

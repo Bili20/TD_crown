@@ -199,10 +199,10 @@ def base_hut(pose: ThrowPose) -> Layer:
         fill(layer, x, y, x + 2, y, BRICK.base)
     for beam_x in (6, 25):
         fill(layer, beam_x, rail + 3, beam_x, GROUND_Y, WOOD.dark)
-    fill(layer, 17, 38, 19, 41, GLASS.base)
-    put(layer, 17, 38, GLASS.shine)
-    fill(layer, 17, 40, 19, 41, ACID.base)
-    fill(layer, 16, 37, 20, 37, WOOD.dark)
+    fill(layer, 9, rail + 4, 11, rail + 7, GLASS.base)
+    put(layer, 9, rail + 4, GLASS.shine)
+    fill(layer, 9, rail + 6, 11, rail + 7, ACID.base)
+    fill(layer, 8, rail + 3, 12, rail + 3, WOOD.dark)
     fill(layer, 6, rail + 10, 25, rail + 10, WOOD.dark)
     fill(layer, 10, 38, 13, GROUND_Y, OPENING)
     fill(layer, 9, 36, 14, 36, PRIMARY_LIGHT)
@@ -291,13 +291,13 @@ PUDDLE_SIZE = 32
 def draw_puddle(phase: int = 0) -> Image.Image:
     layer = Layer()
     # Borda com mossas fixas para não ler como disco perfeito; o raio bate com a área do sim.
-    dents = {(1, 13), (1, 14), (30, 18), (30, 19), (12, 30), (13, 30), (20, 1), (21, 1), (5, 4), (26, 27)}
-    area = {(x, y) for x, y, _, _ in ellipse_pixels(15.5, 15.5, 15, 15) if (x, y) not in dents}
+    dents = {(2, 13), (2, 14), (29, 18), (29, 19), (12, 29), (13, 29), (20, 2), (21, 2), (6, 5), (25, 26)}
+    area = {(x, y) for x, y, _, _ in ellipse_pixels(15.5, 15.5, 14.5, 14.5) if (x, y) not in dents}
     for x, y in area:
         neighbors = sum((x + step_x, y + step_y) in area for step_x, step_y in ((1, 0), (-1, 0), (0, 1), (0, -1)))
         put(layer, x, y, ACID.base if neighbors < 4 else ACID.dark)
     # Ondulações em arco (base) e reflexo do lado da luz: lê como líquido, não como tufo de grama.
-    for radius, start_angle, end_angle in ((11.5, 200, 250), (7.5, 30, 80), (11.5, 300, 340)):
+    for radius, start_angle, end_angle in ((7.5, 30, 80), (11.5, 300, 340)):
         for step in range(start_angle, end_angle, 4):
             x = round(15.5 + radius * math.cos(math.radians(step)))
             y = round(15.5 + radius * math.sin(math.radians(step)))
