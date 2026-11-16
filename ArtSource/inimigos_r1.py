@@ -1,7 +1,6 @@
-"""Inimigos da região 1 do lote da demo pública: Cão Infernal e Brutamontes (poses base).
+"""Brutamontes do lote da demo pública (pose base antiga, em redesenho: ver Art Bible §10).
 
-Cão Infernal: lobo magro em meio-galope (patas abertas), cabeça baixa, crina e cauda de fogo. A pose
-base já é de corrida porque o idle toca enquanto ele anda; o pulo procedural vende o galope.
+O Cão Infernal saiu daqui e está em cao_infernal.py.
 Brutamontes: sai do chibi de propósito — cabeça pequena afundada entre ombros enormes, placas de
 ferro negro cravadas na pele com brasas nas juntas e uma clava apoiada no chão.
 """
@@ -22,31 +21,6 @@ COLORS = {
     "i": BLACK_IRON.dark, "j": BLACK_IRON.base, "l": BLACK_IRON.light, "L": BLACK_IRON.shine,
     "n": WOOD.dark, "m": WOOD.base, "M": WOOD.light,
 }
-
-HOUND = [
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    "....................",
-    ".........y..y.......",
-    ".y......yh.yh.......",
-    ".hy.....hrhhry......",
-    ".rh....hrrhrrha.....",
-    "..rh.cccrrrrrbab....",
-    "...rabbbbbbbbbbcc...",
-    "....bbbbbbbbbbbybc..",
-    "....abbbaaaabbbbbbc.",
-    "....bba.....abbbkkb.",
-    "...bba.a....ab.aea..",
-    "...ba..a.....ab.....",
-    "..ba...a......ab....",
-    "..a...a........ba...",
-    ".aa...k.........kaa.",
-    "....................",
-]
-HOUND_FRAME = 20
-HOUND_GROUND_ROW = 18
 
 BRUTE_HEAD = [
     "c......c",
@@ -151,7 +125,8 @@ def with_shadow(sprite: Image.Image, ground_row: int, radius_x: float) -> Image.
 
 if __name__ == "__main__":
     from balista import row_of
-    hound = with_shadow(draw(HOUND), HOUND_GROUND_ROW, 6.5)
+    import cao_infernal
+    hound = cao_infernal.with_blob(cao_infernal.final_frame(cao_infernal.IDLE[0]), cao_infernal.IDLE[0])
     brute = with_shadow(draw_brute(), BRUTE_GROUND_ROW, 8.5)
     imp = Image.open("../Assets/_Project/Art/Enemies/Imp/imp_idle.png").convert("RGBA").crop((0, 0, 16, 16))
     row_of([imp, hound, brute], gap=3, scale=10).save("inimigos_preview.png")

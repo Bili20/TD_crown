@@ -794,10 +794,37 @@
             168,
             188
           ]
+        },
+        "HOUND_FUR": {
+          "deep": [
+            34,
+            28,
+            40
+          ],
+          "dark": [
+            50,
+            36,
+            58
+          ],
+          "base": [
+            68,
+            50,
+            76
+          ],
+          "light": [
+            110,
+            84,
+            104
+          ],
+          "shine": [
+            160,
+            128,
+            124
+          ]
         }
       },
       "aliases": {
-        "HOUND": "DEMON",
+        "HOUND": "HOUND_FUR",
         "IMP": "DEMON"
       },
       "accent": "HELLFIRE",
@@ -1121,17 +1148,17 @@
     "idle": {
       "frames": [
         4,
-        4
+        6
       ],
       "frame_ms": [
-        180,
+        130,
         260
       ]
     },
     "attack": {
       "frames": [
         4,
-        6
+        7
       ],
       "hit_frame_ms": 70
     },
@@ -1144,6 +1171,17 @@
         150,
         250
       ]
+    },
+    "walk": {
+      "frames": [
+        4,
+        8
+      ],
+      "frame_ms": [
+        60,
+        140
+      ],
+      "note": "opcional para inimigos e unidades; sem ele o idle toca enquanto anda (andar procedural)"
     }
   },
   "procedural": {
@@ -1152,7 +1190,8 @@
       "tilt_degrees": 5,
       "squash_on_land": 0.1,
       "steps_per_tile": 2,
-      "frequency_follows_current_speed": true
+      "frequency_follows_current_speed": true,
+      "only_without_drawn_walk": true
     },
     "death": {
       "flash_ms": 60,
@@ -1183,6 +1222,7 @@
     "animation_names": [
       "idle",
       "attack",
+      "walk",
       "hit",
       "death",
       "special",
@@ -1305,7 +1345,8 @@
       0.75
     ],
     "height_px": 2,
-    "separate_object": true
+    "separate_object": true,
+    "top_at_or_below_feet": true
   },
   "tower_materials": {
     "balista": {

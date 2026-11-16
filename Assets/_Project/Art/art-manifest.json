@@ -2,6 +2,76 @@
   "version": 1,
   "sheets": [
     {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_attack.png",
+      "assetId": "cao_infernal",
+      "animation": "attack",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        140,
+        180,
+        70,
+        70,
+        110,
+        120,
+        150
+      ],
+      "loop": false,
+      "impactFrame": 3,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_idle.png",
+      "assetId": "cao_infernal",
+      "animation": "idle",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        180,
+        160,
+        240,
+        160,
+        220,
+        170
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_walk.png",
+      "assetId": "cao_infernal",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        65,
+        65,
+        65,
+        65,
+        65,
+        65
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.923
+    },
+    {
       "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_attack.png",
       "assetId": "imp",
       "animation": "attack",
@@ -12,14 +82,17 @@
       "pivotX": 0.5,
       "pivotY": 0.125,
       "durationsMs": [
-        140,
+        80,
+        60,
         70,
+        90,
         110,
-        140
+        120
       ],
       "loop": false,
-      "impactFrame": 1,
-      "turretAnchorPx": []
+      "impactFrame": 2,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
     },
     {
       "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_idle.png",
@@ -32,14 +105,40 @@
       "pivotX": 0.5,
       "pivotY": 0.125,
       "durationsMs": [
-        160,
-        140,
-        160,
-        140
+        180,
+        150,
+        170,
+        170,
+        130,
+        160
       ],
       "loop": true,
       "impactFrame": -1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_walk.png",
+      "assetId": "imp",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.389
     },
     {
       "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_attack.png",

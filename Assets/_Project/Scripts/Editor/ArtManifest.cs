@@ -27,6 +27,8 @@ namespace TDCrown.EditorTools
         public bool loop;
         public int impactFrame;
         public int[] turretAnchorPx;
+        // Velocidade no chão (tile/s) em que o ciclo de andar desenhado não desliza, com o Animator em 1x.
+        public float groundSpeedTilesPerSecond;
 
         public bool HasClip => !string.IsNullOrEmpty(controller) && durationsMs != null && durationsMs.Length > 0;
 

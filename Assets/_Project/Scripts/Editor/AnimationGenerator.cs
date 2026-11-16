@@ -18,12 +18,13 @@ namespace TDCrown.EditorTools
         private const string ControllersFolder = AnimationRoot + "/Controllers";
         private const string PlaceholdersFolder = ControllersFolder + "/Placeholders";
         private const string AttackTrigger = "Attack";
+        private const string MovingParameter = "Moving";
         private const float PixelsPerUnit = 16f;
         private const float ClipFrameRate = 60f;
 
         private static readonly Dictionary<string, string[]> StatesByController = new Dictionary<string, string[]>
         {
-            { "Unit", new[] { "Idle", "Attack" } },
+            { "Unit", new[] { "Idle", "Walk", "Attack" } },
             { "TowerTurret", new[] { "Idle", "Attack" } },
             { "TowerBase", new[] { "Idle" } },
         };
@@ -207,6 +208,10 @@ namespace TDCrown.EditorTools
             {
                 report.Append($", attackWindup = {sheet.WindupMs()} ms (frame de impacto {sheet.impactFrame})");
             }
+            if (sheet.groundSpeedTilesPerSecond > 0f)
+            {
+                report.Append($", andar sem deslizar a {sheet.groundSpeedTilesPerSecond:0.##} tile/s");
+            }
             if (sheet.turretAnchorPx != null && sheet.turretAnchorPx.Length == 2)
             {
                 report.Append($", âncora da besta = ({sheet.turretAnchorPx[0]}, {sheet.turretAnchorPx[1]}) px");
@@ -235,6 +240,11 @@ namespace TDCrown.EditorTools
                 var placeholder = placeholderAndClip.Key;
                 var stateName = placeholder.name.Substring(placeholder.name.LastIndexOf('_') + 1);
                 clipsByState.TryGetValue(stateName, out var clip);
+                if (clip == null && stateName == "Walk" && clipsByState.TryGetValue("Idle", out var idleClip))
+                {
+                    // Sem andar desenhado, o idle toca enquanto a unidade anda e o andar procedural faz o resto.
+                    clip = idleClip;
+                }
                 if (clip == null)
                 {
                     report.AppendLine($"AVISO {firstSheet.assetId}: sem clip para o estado {stateName}");
@@ -249,51 +259,103 @@ namespace TDCrown.EditorTools
         {
             EnsureFolder(PlaceholdersFolder);
             var controllerPath = $"{ControllersFolder}/{controllerName}.controller";
-            var existingController = AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath);
-            if (existingController != null)
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(controllerPath);
+            if (controller == null)
             {
-                return existingController;
+                controller = AnimatorController.CreateAnimatorControllerAtPath(controllerPath);
             }
 
-            var controller = AnimatorController.CreateAnimatorControllerAtPath(controllerPath);
-            var stateNames = StatesByController[controllerName];
+            // Um controller que já existe ganha só os estados que faltam, no lugar: os overrides e as
+            // views que apontam para ele continuam valendo.
             var stateMachine = controller.layers[0].stateMachine;
-            var statesByName = new Dictionary<string, AnimatorState>();
-            foreach (var stateName in stateNames)
+            var statesByName = stateMachine.states.ToDictionary(childState => childState.state.name, childState => childState.state);
+            var addedStates = new List<string>();
+            foreach (var stateName in StatesByController[controllerName])
             {
-                var placeholderPath = $"{PlaceholdersFolder}/{controllerName}_{stateName}.anim";
-                var placeholder = AssetDatabase.LoadAssetAtPath<AnimationClip>(placeholderPath);
-                if (placeholder == null)
+                if (statesByName.ContainsKey(stateName))
                 {
-                    placeholder = new AnimationClip();
-                    AssetDatabase.CreateAsset(placeholder, placeholderPath);
+                    continue;
                 }
                 var state = stateMachine.AddState(stateName);
-                state.motion = placeholder;
+                state.motion = EnsurePlaceholder(controllerName, stateName);
                 statesByName[stateName] = state;
+                addedStates.Add(stateName);
             }
             stateMachine.defaultState = statesByName["Idle"];
 
-            if (statesByName.TryGetValue("Attack", out var attackState))
+            if (addedStates.Contains("Attack"))
             {
-                controller.AddParameter(AttackTrigger, AnimatorControllerParameterType.Trigger);
-                var idleState = statesByName["Idle"];
-
-                var startAttack = idleState.AddTransition(attackState);
-                startAttack.AddCondition(AnimatorConditionMode.If, 0f, AttackTrigger);
-                ConfigureInstantTransition(startAttack, hasExitTime: false);
-
-                // Um ataque novo antes do clip acabar recomeça o golpe em vez de esperar.
-                var restartAttack = attackState.AddTransition(attackState);
-                restartAttack.AddCondition(AnimatorConditionMode.If, 0f, AttackTrigger);
-                ConfigureInstantTransition(restartAttack, hasExitTime: false);
-
-                var backToIdle = attackState.AddTransition(idleState);
-                ConfigureInstantTransition(backToIdle, hasExitTime: true);
+                ConnectAttack(controller, statesByName);
+            }
+            if (addedStates.Contains("Walk"))
+            {
+                ConnectWalk(controller, statesByName);
             }
 
             EditorUtility.SetDirty(controller);
             return controller;
+        }
+
+        private static AnimationClip EnsurePlaceholder(string controllerName, string stateName)
+        {
+            var placeholderPath = $"{PlaceholdersFolder}/{controllerName}_{stateName}.anim";
+            var placeholder = AssetDatabase.LoadAssetAtPath<AnimationClip>(placeholderPath);
+            if (placeholder == null)
+            {
+                placeholder = new AnimationClip();
+                AssetDatabase.CreateAsset(placeholder, placeholderPath);
+            }
+            return placeholder;
+        }
+
+        private static void ConnectAttack(AnimatorController controller, Dictionary<string, AnimatorState> statesByName)
+        {
+            EnsureParameter(controller, AttackTrigger, AnimatorControllerParameterType.Trigger);
+            var idleState = statesByName["Idle"];
+            var attackState = statesByName["Attack"];
+
+            var startAttack = idleState.AddTransition(attackState);
+            startAttack.AddCondition(AnimatorConditionMode.If, 0f, AttackTrigger);
+            ConfigureInstantTransition(startAttack, hasExitTime: false);
+
+            // Um ataque novo antes do clip acabar recomeça o golpe em vez de esperar.
+            var restartAttack = attackState.AddTransition(attackState);
+            restartAttack.AddCondition(AnimatorConditionMode.If, 0f, AttackTrigger);
+            ConfigureInstantTransition(restartAttack, hasExitTime: false);
+
+            // Volta sempre pelo Idle: se a unidade ainda estiver andando, o Idle passa para o Walk no mesmo quadro.
+            var backToIdle = attackState.AddTransition(idleState);
+            ConfigureInstantTransition(backToIdle, hasExitTime: true);
+        }
+
+        private static void ConnectWalk(AnimatorController controller, Dictionary<string, AnimatorState> statesByName)
+        {
+            EnsureParameter(controller, MovingParameter, AnimatorControllerParameterType.Bool);
+            var idleState = statesByName["Idle"];
+            var walkState = statesByName["Walk"];
+
+            var startWalking = idleState.AddTransition(walkState);
+            startWalking.AddCondition(AnimatorConditionMode.If, 0f, MovingParameter);
+            ConfigureInstantTransition(startWalking, hasExitTime: false);
+
+            var stopWalking = walkState.AddTransition(idleState);
+            stopWalking.AddCondition(AnimatorConditionMode.IfNot, 0f, MovingParameter);
+            ConfigureInstantTransition(stopWalking, hasExitTime: false);
+
+            if (statesByName.TryGetValue("Attack", out var attackState))
+            {
+                var attackWhileWalking = walkState.AddTransition(attackState);
+                attackWhileWalking.AddCondition(AnimatorConditionMode.If, 0f, AttackTrigger);
+                ConfigureInstantTransition(attackWhileWalking, hasExitTime: false);
+            }
+        }
+
+        private static void EnsureParameter(AnimatorController controller, string parameterName, AnimatorControllerParameterType parameterType)
+        {
+            if (controller.parameters.All(parameter => parameter.name != parameterName))
+            {
+                controller.AddParameter(parameterName, parameterType);
+            }
         }
 
         private static void ConfigureInstantTransition(AnimatorStateTransition transition, bool hasExitTime)

@@ -14,6 +14,7 @@ import forja
 import campanario
 import alquimista
 import inimigos_r1
+import cao_infernal
 from animate_v2 import draw_soldier as draw_soldier_lv2, SoldierPose
 
 LABEL_COLOR = (236, 230, 214, 255)
@@ -48,7 +49,7 @@ def units(preset_name: str) -> list[tuple[str, Image.Image]]:
         ("soldado 2", soldier_with_shadow(recolor(draw_soldier_lv2(SoldierPose()), preset))),
         ("soldado 3", soldier_with_shadow(recolor(forja.draw_soldier(forja.SOLDIER_VETERAN), preset))),
         ("diabrete", soldier_with_shadow(imp)),
-        ("cao", inimigos_r1.with_shadow(inimigos_r1.draw(inimigos_r1.HOUND), inimigos_r1.HOUND_GROUND_ROW, 6.5)),
+        ("cao", cao_infernal.with_blob(cao_infernal.final_frame(cao_infernal.IDLE[0]), cao_infernal.IDLE[0])),
         ("brutamontes", inimigos_r1.with_shadow(inimigos_r1.draw_brute(), inimigos_r1.BRUTE_GROUND_ROW, 8.5)),
         ("virote", bolt),
         ("frasco", alquimista.draw_flask()),
@@ -140,7 +141,8 @@ def scene_3x() -> Image.Image:
     for image, tile_x, tile_y in tower_spots:
         sprites.append((tile_y * TILE, image, tile_x * TILE + 8, tile_y * TILE + 3))
     imp = soldier_with_shadow(Image.open("../Assets/_Project/Art/Enemies/Imp/imp_idle.png").convert("RGBA").crop((0, 0, 16, 16)))
-    hound = inimigos_r1.with_shadow(inimigos_r1.draw(inimigos_r1.HOUND), inimigos_r1.HOUND_GROUND_ROW, 6.5)
+    # Sombra com o topo na linha dos pés: centrada acima dela, cobre as pernas do cão escuro.
+    hound = cao_infernal.with_blob(cao_infernal.final_frame(cao_infernal.IDLE[0]), cao_infernal.IDLE[0])
     brute = inimigos_r1.with_shadow(inimigos_r1.draw_brute(), inimigos_r1.BRUTE_GROUND_ROW, 8.5)
     soldier = soldier_with_shadow(recolor(draw_soldier_lv2(SoldierPose()), royal))
     veteran = soldier_with_shadow(recolor(forja.draw_soldier(forja.SOLDIER_VETERAN), royal))

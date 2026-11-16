@@ -17,7 +17,8 @@ def pivot_from_ground_row(frame_height: int, ground_row: int) -> float:
 def export_animation(frames: list[Image.Image], *, category: str, asset_folder: str, asset_id: str,
                      animation: str, durations_ms: list[int], controller: str, ground_row: int,
                      loop: bool = True, impact_frame: int = -1,
-                     turret_anchor_px: tuple[int, int] | None = None) -> Path:
+                     turret_anchor_px: tuple[int, int] | None = None,
+                     ground_speed_tiles_per_second: float = 0.0) -> Path:
     if durations_ms and len(durations_ms) != len(frames):
         raise ValueError(f"{asset_id}_{animation}: {len(frames)} frames e {len(durations_ms)} durações")
     frame_width, frame_height = frames[0].size
@@ -40,6 +41,7 @@ def export_animation(frames: list[Image.Image], *, category: str, asset_folder: 
         "loop": loop,
         "impactFrame": impact_frame,
         "turretAnchorPx": list(turret_anchor_px) if turret_anchor_px else [],
+        "groundSpeedTilesPerSecond": round(ground_speed_tiles_per_second, 3),
     }
     _update_manifest(entry)
     return sheet_path
@@ -66,6 +68,7 @@ def export_directions(frames: list[Image.Image], *, category: str, asset_folder:
         "loop": False,
         "impactFrame": -1,
         "turretAnchorPx": [],
+        "groundSpeedTilesPerSecond": 0.0,
     })
     return sheet_path
 

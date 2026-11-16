@@ -196,7 +196,7 @@ Um único pipeline para todo número de torre e unidade, nesta ordem: **base →
 | Ninhada (`ninhada`) | ao morrer libera 4 Diabretes 1 tile atrás no caminho; Pesado | 120 | lento | Armadura 30% | 12 | fase 5 |
 | Gárgula (`gargula`) | voador, Leve | 40 | médio | — | 8 | fase 6 |
 
-Velocidades "muito rápido / lento / médio" ganham número no primeiro playtest do vertical slice.
+Velocidades "muito rápido / lento / médio" ganham número no primeiro playtest do vertical slice. Referência da arte: o galope do Cão Infernal foi desenhado para **1,9 tile/s** e o passo do Diabrete para **1,4 tile/s** (nessas velocidades os pés não deslizam). O Animator acompanha qualquer valor, mas acima de ~1,5× a referência o ciclo fica corrido: se o número final passar disso, o ciclo é redesenhado.
 
 **Mini boss, fase 4: Carrasco do Portal (`carrasco`)**
 
