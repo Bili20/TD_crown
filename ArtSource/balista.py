@@ -1,8 +1,12 @@
+import random
 from dataclasses import dataclass, replace
 from PIL import Image
 from art_export import export_animation, export_directions
 from pixel_canvas import Ramp, Canvas, Layer, stamp, line_pixels, ellipse_pixels, save_spritesheet, save_preview_gif
 from style_test import PLAYER, PLAYER_COLORS, PRESETS, BACKGROUND, REGION1, recolor
+from material_map import (Sprite, DEEP, DARK, BASE, LIGHT, SHINE, shade_volume, cast_shadow,
+                          ambient_occlusion, recess, stone_courses, planks, team_pennant, team_shield,
+                          team_banner)
 
 BASE_WIDTH, BASE_HEIGHT, GROUND_Y = 32, 48, 44
 TURRET_WIDTH, TURRET_HEIGHT = 20, 16
@@ -212,122 +216,155 @@ def draw_pennant(layer: Layer, pole_x: int, pole_top: int, pole_bottom: int, wav
             put(layer, pole_x + 1 + column_index + offset, pole_top + row_index, PLAYER_COLORS[symbol])
 
 
-def base_platform(wave: int) -> Layer:
-    layer = Layer()
+def platform_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
     for leg_x in (10, 21):
-        fill(layer, leg_x, 35, leg_x, 41, WOOD.dark)
-    draw_line(layer, (9, 36), (22, 43), WOOD.dark)
-    draw_line(layer, (22, 36), (9, 43), WOOD.dark)
+        sprite.fill(leg_x, 35, leg_x, 41, "wood", tone=DARK)
+    for start, end in (((9, 36), (22, 43)), ((22, 36), (9, 43))):
+        for x, y in line_pixels(start, end):
+            sprite.set(x, y, "wood", tone=DARK)
     for leg_x in (7, 23):
-        fill(layer, leg_x, 35, leg_x, GROUND_Y, WOOD.base)
-        fill(layer, leg_x + 1, 35, leg_x + 1, GROUND_Y, WOOD.dark)
-    fill(layer, 5, 32, 26, 32, WOOD.light)
-    fill(layer, 5, 33, 26, 34, WOOD.base)
-    for plank_x in range(8, 26, 4):
-        put(layer, plank_x, 33, WOOD.dark)
-    fill(layer, 5, 34, 26, 34, WOOD.dark)
-    fill(layer, 6, 30, 25, 30, WOOD.light)
-    fill(layer, 6, 31, 25, 31, WOOD.base)
+        sprite.fill(leg_x, 35, leg_x + 1, GROUND_Y, "wood")
+    sprite.fill(5, 32, 26, 32, "wood", "top")
+    sprite.fill(5, 33, 26, 34, "wood")
+    sprite.fill(6, 30, 25, 30, "wood", "top")
+    sprite.fill(6, 31, 25, 31, "wood")
     for post_x in (6, 15, 25):
-        fill(layer, post_x, 29, post_x, 31, WOOD.dark)
-    draw_pennant(layer, 26, 20, 31, wave)
-    return layer
+        sprite.fill(post_x, 29, post_x, 31, "wood", tone=DARK)
+    team_pennant(sprite, 26, 20, 31, wave)
+    return sprite
 
 
-def base_watchtower(wave: int) -> Layer:
-    layer = Layer()
-    fill(layer, 7, 26, 24, GROUND_Y, WOOD.base)
+def platform_shading(sprite: Sprite):
+    sprite.fill(5, 34, 26, 34, "wood", tone=DEEP)
+    for leg_x in (7, 23):
+        for y in range(35, GROUND_Y + 1):
+            sprite.shift(leg_x + 1, y, -1, ("wood",))
+    cast_shadow(sprite, 9, 22, 35, depth=1, materials=("wood",))
+
+
+def platform_details(sprite: Sprite, rng):
+    planks(sprite, 5, 33, 26, 33, rng, vertical=False, plank_width=4, nails=False)
+    for x in range(8, 26, 4):
+        sprite.set(x, 33, "wood", tone=DARK)
+    for x in (9, 14, 19, 24):
+        sprite.set(x, 32, "iron", tone=LIGHT)
+    sprite.set(7, GROUND_Y, "wood", tone=DARK)
+
+
+def watchtower_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
+    sprite.fill(7, 26, 24, GROUND_Y, "wood")
+    sprite.fill(14, 37, 17, GROUND_Y, "opening")
+    for start, end in (((5, 25), (7, 28)), ((26, 25), (24, 28))):
+        for x, y in line_pixels(start, end):
+            sprite.set(x, y, "wood", tone=DARK)
+    sprite.fill(4, 24, 27, 24, "wood", tone=DARK)
+    sprite.fill(4, 25, 27, 25, "opening")
+    for column in range(4, 28):
+        sprite.fill(column, 20 if column % 2 == 0 else 21, column, 23, "wood")
+    team_shield(sprite, 13, 31)
+    team_pennant(sprite, 5, 9, 19, wave)
+    return sprite
+
+
+def watchtower_shading(sprite: Sprite):
+    # Troncos redondos: cada tronco de 3 px tem luz, base e sombra.
     for column in range(7, 25):
-        if column % 3 == 0:
-            fill(layer, column, 26, column, GROUND_Y, WOOD.dark)
-        elif column % 3 == 1:
-            fill(layer, column, 26, column, GROUND_Y, WOOD.light)
-    fill(layer, 6, 26, 6, GROUND_Y, WOOD.dark)
-    fill(layer, 25, 26, 25, GROUND_Y, WOOD.dark)
+        offset = (column - 7) % 3
+        for y in range(26, GROUND_Y + 1):
+            sprite.shift(column, y, {0: +1, 1: 0, 2: -1}[offset], ("wood",))
+    for column in range(4, 28):
+        offset = column % 3
+        for y in range(20, 24):
+            sprite.shift(column, y, {0: +1, 1: 0, 2: -1}[offset], ("wood",))
+    shade_volume(sprite, 7, 26, 24, GROUND_Y, ("wood",), shadow_columns=2, lit_columns=0)
+    cast_shadow(sprite, 7, 24, 26, depth=2, materials=("wood",))
+    ambient_occlusion(sprite, 7, 24, GROUND_Y, ("wood",))
+
+
+def watchtower_details(sprite: Sprite, rng):
     for band_y in (29, 39):
-        fill(layer, 6, band_y, 25, band_y, IRON.base)
-        fill(layer, 6, band_y + 1, 25, band_y + 1, IRON.dark)
-    fill(layer, 14, 37, 17, GROUND_Y, DOOR)
-    fill(layer, 13, 36, 18, 36, WOOD.dark)
-    fill(layer, 13, 37, 13, GROUND_Y, WOOD.dark)
-    fill(layer, 18, 37, 18, GROUND_Y, WOOD.dark)
-    stamp(layer, [".bbbb.", "abwwbb", "abbwbb", ".abbb.", "..ab.."], 13, 31, PLAYER_COLORS)
-    draw_line(layer, (5, 25), (7, 28), WOOD.dark)
-    draw_line(layer, (26, 25), (24, 28), WOOD.dark)
-    fill(layer, 4, 24, 27, 24, WOOD.dark)
-    fill(layer, 4, 25, 27, 25, DOOR)
+        sprite.fill(6, band_y, 25, band_y, "iron")
+        sprite.fill(6, band_y + 1, 25, band_y + 1, "iron", tone=DARK)
+        for x in range(8, 25, 5):
+            sprite.set(x, band_y, "iron", tone=SHINE)
     for column in range(4, 28):
         top = 20 if column % 2 == 0 else 21
-        color = WOOD.light if column % 3 == 1 else (WOOD.dark if column % 3 == 0 else WOOD.base)
-        fill(layer, column, top, column, 23, color)
-    fill(layer, 4, 22, 27, 22, WOOD.dark)
-    draw_pennant(layer, 5, 9, 19, wave)
-    return layer
+        sprite.set(column, top, "wood", tone=LIGHT if column % 3 == 0 else BASE)
+    sprite.fill(13, 36, 18, 36, "wood", tone=DARK)
+    sprite.fill(13, 37, 13, GROUND_Y, "wood", tone=DARK)
+    sprite.fill(18, 37, 18, GROUND_Y, "wood", tone=DEEP)
+    for _ in range(4):
+        x, y = rng.randint(8, 23), rng.randint(31, 43)
+        if sprite.is_material(x, y, "wood"):
+            sprite.shift(x, y, -1, ("wood",))
+            sprite.shift(x, y + 1, -1, ("wood",))
 
 
-def base_bastion(wave: int) -> Layer:
-    layer = Layer()
-    fill(layer, 6, 20, 25, GROUND_Y, STONE.base)
-    fill(layer, 5, 41, 26, GROUND_Y, STONE.base)
-    for row_start in range(20, GROUND_Y + 1, 3):
-        fill(layer, 5 if row_start >= 41 else 6, row_start, 26 if row_start >= 41 else 25, row_start, STONE.dark)
-        offset = 0 if (row_start // 3) % 2 == 0 else 2
-        for column in range(6 + offset, 26, 4):
-            fill(layer, column, row_start, column, min(row_start + 2, GROUND_Y), STONE.dark)
-        fill(layer, 6, row_start + 1, 25, row_start + 1, STONE.light) if False else None
-    for column in range(6, 26):
-        if (column, 21) not in [(c, 21) for c in range(0)]:
-            pass
-    fill(layer, 6, 20, 6, GROUND_Y, STONE.dark)
-    fill(layer, 25, 20, 25, GROUND_Y, STONE.light)
+def bastion_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
+    sprite.fill(6, 20, 25, GROUND_Y, "stone")
+    sprite.fill(5, 41, 26, GROUND_Y, "stone")
     for slit_x in (9, 22):
-        fill(layer, slit_x, 25, slit_x, 28, DOOR)
-    fill(layer, 13, 38, 18, GROUND_Y, DOOR)
-    put(layer, 13, 38, STONE.dark)
-    put(layer, 18, 38, STONE.dark)
-    for stud_y in (40, 43):
-        put(layer, 14, stud_y, IRON.base)
-        put(layer, 17, stud_y, IRON.base)
-    # Estandarte do time pendurado na frente, com o emblema e a franja na cor secundária.
-    stamp(layer, [
-        "eeeeee",
-        "abbbbc",
-        "abbbbc",
-        "abwwbc",
-        "awwwwc",
-        "abwwbc",
-        "abbbbc",
-        "abbbbc",
-        "ebbbbe",
-        "e.ab.e",
-    ], 13, 20, PLAYER_COLORS)
-    if wave in (1, 2):
-        put(layer, 13, 29, PRIMARY_DARK)
-        del layer.pixels[(18, 29)]
-    fill(layer, 3, 18, 28, 18, STONE.light)
-    fill(layer, 3, 19, 28, 19, STONE.dark)
-    for column in range(4, 28, 3):
-        put(layer, column, 19, DOOR)
-    fill(layer, 4, 15, 27, 15, STONE.shine)
-    fill(layer, 4, 16, 27, 17, STONE.base)
-    for column in range(7, 26, 5):
-        put(layer, column, 16, STONE.dark)
-        put(layer, column, 17, STONE.dark)
+        sprite.fill(slit_x, 25, slit_x, 28, "opening")
+    sprite.fill(13, 38, 18, GROUND_Y, "wood")
+    sprite.set(13, 38, "stone")
+    sprite.set(18, 38, "stone")
+    sprite.fill(3, 18, 28, 18, "stone", "top")
+    sprite.fill(3, 19, 28, 19, "stone")
+    sprite.fill(4, 15, 27, 15, "stone", "top")
+    sprite.fill(4, 16, 27, 17, "stone")
     for merlon_left in (4, 24):
-        fill(layer, merlon_left, 11, merlon_left + 3, 14, STONE.base)
-        fill(layer, merlon_left, 11, merlon_left + 3, 11, STONE.shine)
-        fill(layer, merlon_left + 3, 12, merlon_left + 3, 14, STONE.dark)
-    draw_pennant(layer, 5, 2, 10, wave)
-    return layer
+        sprite.fill(merlon_left, 12, merlon_left + 3, 14, "stone")
+        sprite.fill(merlon_left, 11, merlon_left + 3, 11, "stone", "top")
+    team_banner(sprite, 13, 20, 10)
+    team_pennant(sprite, 5, 2, 10, wave)
+    return sprite
 
 
-BASES = {1: base_platform, 2: base_watchtower, 3: base_bastion}
+def bastion_shading(sprite: Sprite):
+    shade_volume(sprite, 6, 20, 25, GROUND_Y, ("stone",))
+    sprite.fill(3, 19, 28, 19, "stone", tone=DARK)
+    for x in range(4, 28, 3):
+        sprite.set(x, 19, "opening")
+    cast_shadow(sprite, 6, 25, 20, depth=2, materials=("stone",))
+    for merlon_left in (4, 24):
+        for y in range(12, 15):
+            sprite.shift(merlon_left + 3, y, -1, ("stone",))
+    recess(sprite, 13, 38, 18, GROUND_Y, ("wood",))
+    ambient_occlusion(sprite, 5, 26, GROUND_Y, ("stone",))
+
+
+def bastion_details(sprite: Sprite, rng):
+    stone_courses(sprite, 6, 22, 25, GROUND_Y, rng)
+    stone_courses(sprite, 4, 16, 27, 17, rng, heights=(2,), widths=(4, 5, 6), protrude=False)
+    planks(sprite, 13, 39, 18, GROUND_Y, rng, plank_width=2, nails=False)
+    for stud_y in (40, 43):
+        sprite.set(14, stud_y, "iron", tone=LIGHT)
+        sprite.set(17, stud_y, "iron", tone=LIGHT)
+    sprite.fill(12, 37, 19, 37, "stone", tone=LIGHT)
+
+
+SHAPES = {1: platform_shape, 2: watchtower_shape, 3: bastion_shape}
+SHADERS = {1: platform_shading, 2: watchtower_shading, 3: bastion_shading}
+DETAILS = {1: platform_details, 2: watchtower_details, 3: bastion_details}
+
+
+def build_base(level_number: int, wave: int = 0, stage: int = 5) -> Image.Image:
+    sprite = SHAPES[level_number](wave)
+    if stage == 1:
+        return sprite.render(silhouette=True)
+    sprite.reset_tones()
+    if stage >= 3:
+        SHADERS[level_number](sprite)
+    if stage >= 4:
+        DETAILS[level_number](sprite, random.Random(level_number * 11))
+    return sprite.render()
 
 
 def draw_base(level_number: int, wave: int) -> Image.Image:
-    canvas = Canvas(BASE_WIDTH, BASE_HEIGHT)
-    canvas.put_layer(BASES[level_number](wave))
-    return canvas.to_image()
+    return build_base(level_number, wave)
 
 
 BASE_IDLE_WAVES = [0, 1, 2, 3]

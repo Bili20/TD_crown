@@ -3,10 +3,14 @@
 O Campanário não mira: a camada de cima não vira com flipX. Ela continua separada da base para o
 sino balançar no pulso e para toda torre usar a mesma estrutura de view (base + camada de cima).
 """
+import random
 from dataclasses import dataclass
 from PIL import Image
 from pixel_canvas import Layer, stamp
 from style_test import PLAYER, PLAYER_COLORS, PRESETS
+from material_map import (Sprite, DEEP, DARK, BASE, LIGHT, SHINE, shade_volume, cast_shadow,
+                          ambient_occlusion, recess, tile_roof, planks, pyramid_roof, plaster_wear,
+                          team_pennant, team_shield, team_banner)
 from tower_parts import (BASE_WIDTH, BASE_HEIGHT, GROUND_Y, TURRET_WIDTH, TURRET_HEIGHT, WAIST_ROW,
                          WOOD, IRON, OPENING,
                          put, fill, draw_line, draw_pennant, draw_shield, draw_banner, erase_below,
@@ -142,116 +146,148 @@ def draw_turret(level_number: int, pose: BellPose) -> Image.Image:
     return layers_to_image(TURRET_WIDTH, TURRET_HEIGHT, frame_layer, bell_layer, ringer_layer)
 
 
-def whitewash_wall(layer: Layer, left: int, top: int, right: int, bottom: int):
-    fill(layer, left, top, right, bottom, WHITEWASH.base)
-    fill(layer, left, top, left, bottom, WHITEWASH.light)
-    fill(layer, right - 2, top, right, bottom, WHITEWASH.dark)
-    # Pedras aparecendo sob a cal, poucas e espaçadas para não virar textura.
-    for x, y in [(left + 3, top + 4), (right - 4, top + 9), (left + 5, bottom - 3), (right - 3, bottom - 1)]:
-        if top <= y <= bottom:
-            put(layer, x, y, WHITEWASH.dark)
-            put(layer, x + 1, y, WHITEWASH.dark)
-
-
-def slate_roof(layer: Layer, left: int, right: int, bottom: int, peak_y: int):
-    height = bottom - peak_y
-    center = (left + right) / 2
-    for row in range(peak_y, bottom + 1):
-        half = (right - left) / 2 * (row - peak_y + 1) / (height + 1)
-        row_left, row_right = round(center - half), round(center + half)
-        for column in range(row_left, row_right + 1):
-            color = SLATE.base
-            if column <= center - 1:
-                color = SLATE.light
-            if (row - peak_y) % 2 == 1 and column % 3 == 0:
-                color = SLATE.dark
-            put(layer, column, row, color)
-    fill(layer, left, bottom, right, bottom, SLATE.dark)
-
-
-def belfry_parapet(layer: Layer, left: int, right: int, rail_top: int):
-    fill(layer, left, rail_top, right, rail_top, SLATE.light)
-    fill(layer, left, rail_top + 1, right, rail_top + 1, SLATE.base)
-    fill(layer, left, rail_top + 2, right, rail_top + 2, SLATE.dark)
-
-
-# --- nv1: armação de madeira com sino pequeno -----------------------------------------------------
-def base_frame(wave: int) -> Layer:
-    layer = Layer()
-    level = LEVELS[1]
-    rail = level.rail_top_y
-    # Sapata de pedra caiada.
-    whitewash_wall(layer, 6, 39, 25, GROUND_Y)
-    fill(layer, 5, 38, 26, 38, SLATE.base)
-    # Estrado de madeira com travessas em X.
-    for leg_x in (8, 23):
-        fill(layer, leg_x, rail + 3, leg_x, 37, WOOD.dark)
-    draw_line(layer, (9, rail + 4), (22, 37), WOOD.dark)
-    draw_line(layer, (22, rail + 4), (9, 37), WOOD.dark)
-    fill(layer, 6, rail, 25, rail, WOOD.light)
-    fill(layer, 6, rail + 1, 25, rail + 2, WOOD.base)
-    fill(layer, 6, rail + 2, 25, rail + 2, WOOD.dark)
-    draw_pennant(layer, 5, rail - 11, rail - 1, wave)
-    return layer
-
-
+# --- Bases no pipeline em 5 etapas (material_map) --------------------------------------------------
 def belfry_beam_row(level: CampanarioLevel) -> int:
     return turret_origin(level.turret_x, level.rail_top_y)[1] + level.bell_top - 1
 
 
-# --- nv2: campanário caiado com telhado de ardósia -------------------------------------------------
-def base_whitewashed(wave: int) -> Layer:
-    layer = Layer()
+def parapet(sprite: Sprite, left, right, rail):
+    sprite.fill(left, rail, right, rail, "slate", "top")
+    sprite.fill(left, rail + 1, right, rail + 2, "slate")
+
+
+def frame_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
+    rail = LEVELS[1].rail_top_y
+    sprite.fill(6, 39, 25, GROUND_Y, "whitewash")
+    sprite.fill(5, 38, 26, 38, "slate", "top")
+    for leg_x in (8, 23):
+        sprite.fill(leg_x, rail + 3, leg_x, 37, "wood", tone=DARK)
+    for x, y in zip(range(9, 23), range(rail + 3, 38)):
+        sprite.set(x, y if y <= 37 else 37, "wood", tone=DARK)
+    sprite.fill(6, rail, 25, rail, "wood", "top")
+    sprite.fill(6, rail + 1, 25, rail + 2, "wood")
+    team_pennant(sprite, 5, rail - 11, rail - 1, wave)
+    return sprite
+
+
+def frame_shading(sprite: Sprite):
+    shade_volume(sprite, 6, 39, 25, GROUND_Y, ("whitewash",), shadow_columns=3)
+    cast_shadow(sprite, 6, 25, 39, depth=1, materials=("whitewash",))
+    sprite.fill(6, LEVELS[1].rail_top_y + 2, 25, LEVELS[1].rail_top_y + 2, "wood", tone=DARK)
+    ambient_occlusion(sprite, 6, 25, GROUND_Y)
+
+
+def frame_details(sprite: Sprite, rng):
+    plaster_wear(sprite, 6, 39, 25, GROUND_Y, rng)
+    planks(sprite, 6, LEVELS[1].rail_top_y + 1, 25, LEVELS[1].rail_top_y + 1, rng, vertical=False, nails=False)
+
+
+def whitewashed_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
     level = LEVELS[2]
-    rail = level.rail_top_y
-    beam = belfry_beam_row(level)
-    whitewash_wall(layer, 8, rail + 3, 23, GROUND_Y)
-    fill(layer, 14, 40, 17, GROUND_Y, OPENING)
-    fill(layer, 15, 39, 16, 39, OPENING)
-    draw_shield(layer, 13, rail + 3)
-    belfry_parapet(layer, 7, 24, rail)
-    # Pilares do campanário e o telhado acima do sino.
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    sprite.fill(8, rail + 3, 23, GROUND_Y, "whitewash")
+    sprite.fill(14, 40, 17, GROUND_Y, "wood")
+    sprite.fill(15, 39, 16, 39, "wood")
+    parapet(sprite, 7, 24, rail)
     for pillar_left in (6, 24):
-        fill(layer, pillar_left, beam, pillar_left + 1, rail - 1, WHITEWASH.base)
-        fill(layer, pillar_left + 1, beam, pillar_left + 1, rail - 1, WHITEWASH.dark)
-    fill(layer, 6, beam, 25, beam, WOOD.dark)
-    slate_roof(layer, 4, 27, beam - 1, beam - 7)
-    put(layer, 15, beam - 8, BRONZE.light)
-    put(layer, 16, beam - 8, BRONZE.base)
-    draw_pennant(layer, 16, beam - 12, beam - 9, wave)
-    return layer
+        sprite.fill(pillar_left, beam, pillar_left + 1, rail - 1, "whitewash")
+    sprite.fill(6, beam, 25, beam, "wood", tone=DARK)
+    pyramid_roof(sprite, 4, 27, beam - 1, beam - 7)
+    sprite.set(15, beam - 8, "bronze", tone=LIGHT)
+    sprite.set(16, beam - 8, "bronze")
+    team_shield(sprite, 13, rail + 3)
+    team_pennant(sprite, 16, beam - 12, beam - 9, wave)
+    return sprite
 
 
-# --- nv3: torre sineira alta com estandarte -------------------------------------------------------
-def base_tall_tower(wave: int) -> Layer:
-    layer = Layer()
+def whitewashed_shading(sprite: Sprite):
+    level = LEVELS[2]
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    shade_volume(sprite, 8, rail + 3, 23, GROUND_Y, ("whitewash",), shadow_columns=3)
+    cast_shadow(sprite, 8, 23, rail + 3, depth=2, materials=("whitewash",))
+    for pillar_left in (6, 24):
+        for y in range(beam, rail):
+            sprite.shift(pillar_left + 1, y, -1, ("whitewash",))
+    recess(sprite, 14, 39, 17, GROUND_Y, ("wood",))
+    ambient_occlusion(sprite, 8, 23, GROUND_Y, ("whitewash",))
+
+
+def whitewashed_details(sprite: Sprite, rng):
+    level = LEVELS[2]
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    plaster_wear(sprite, 8, rail + 8, 23, GROUND_Y, rng)
+    tile_roof(sprite, range(beam - 7, beam), 15.5, "slate", lit_tone=LIGHT, shadow_tone=BASE)
+    sprite.fill(4, beam - 1, 27, beam - 1, "slate", tone=DEEP)
+    planks(sprite, 14, 40, 17, GROUND_Y, rng, plank_width=2, nails=False)
+
+
+def tall_tower_shape(wave: int):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
     level = LEVELS[3]
-    rail = level.rail_top_y
-    beam = belfry_beam_row(level)
-    whitewash_wall(layer, 7, rail + 3, 24, GROUND_Y)
-    draw_banner(layer, 13, rail + 4, 10)
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    sprite.fill(7, rail + 3, 24, GROUND_Y, "whitewash")
     for slit_x in (9, 21):
-        fill(layer, slit_x, rail + 5, slit_x, rail + 8, OPENING)
-    fill(layer, 7, rail + 14, 24, rail + 14, SLATE.base)
-    fill(layer, 14, rail + 15, 17, GROUND_Y, OPENING)
-    belfry_parapet(layer, 6, 25, rail)
+        sprite.fill(slit_x, rail + 5, slit_x, rail + 8, "opening")
+    sprite.fill(7, rail + 14, 24, rail + 14, "slate")
+    sprite.fill(14, rail + 15, 17, GROUND_Y, "wood")
+    parapet(sprite, 6, 25, rail)
     for pillar_left in (5, 25):
-        fill(layer, pillar_left, beam, pillar_left + 1, rail - 1, WHITEWASH.base)
-        fill(layer, pillar_left + 1, beam, pillar_left + 1, rail - 1, WHITEWASH.dark)
-    fill(layer, 5, beam, 26, beam, WOOD.dark)
-    slate_roof(layer, 3, 28, beam - 1, beam - 8)
-    fill(layer, 2, beam - 1, 29, beam - 1, SLATE.dark)
-    put(layer, 15, beam - 9, BRONZE.shine)
-    put(layer, 16, beam - 9, BRONZE.base)
-    draw_pennant(layer, 16, beam - 12, beam - 10, wave)
-    return layer
+        sprite.fill(pillar_left, beam, pillar_left + 1, rail - 1, "whitewash")
+    sprite.fill(5, beam, 26, beam, "wood", tone=DARK)
+    pyramid_roof(sprite, 3, 28, beam - 1, beam - 8)
+    sprite.fill(2, beam - 1, 29, beam - 1, "slate")
+    sprite.set(15, beam - 9, "bronze", tone=SHINE)
+    sprite.set(16, beam - 9, "bronze")
+    team_banner(sprite, 13, rail + 4, 10)
+    team_pennant(sprite, 16, beam - 12, beam - 10, wave)
+    return sprite
 
 
-BASES = {1: base_frame, 2: base_whitewashed, 3: base_tall_tower}
+def tall_tower_shading(sprite: Sprite):
+    level = LEVELS[3]
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    shade_volume(sprite, 7, rail + 3, 24, GROUND_Y, ("whitewash",), shadow_columns=3)
+    cast_shadow(sprite, 7, 24, rail + 3, depth=2, materials=("whitewash",))
+    cast_shadow(sprite, 7, 24, rail + 15, depth=1, materials=("whitewash",))
+    for pillar_left in (5, 25):
+        for y in range(beam, rail):
+            sprite.shift(pillar_left + 1, y, -1, ("whitewash",))
+    recess(sprite, 14, rail + 15, 17, GROUND_Y, ("wood",))
+    ambient_occlusion(sprite, 7, 24, GROUND_Y, ("whitewash",))
+
+
+def tall_tower_details(sprite: Sprite, rng):
+    level = LEVELS[3]
+    rail, beam = level.rail_top_y, belfry_beam_row(level)
+    for left, right in ((8, 12), (19, 23)):
+        plaster_wear(sprite, left, rail + 5, right, rail + 13, rng)
+    plaster_wear(sprite, 8, rail + 16, 23, GROUND_Y, rng)
+    tile_roof(sprite, range(beam - 8, beam - 1), 15.5, "slate", lit_tone=LIGHT, shadow_tone=BASE)
+    sprite.fill(2, beam - 1, 29, beam - 1, "slate", tone=DEEP)
+    planks(sprite, 14, rail + 15, 17, GROUND_Y, rng, plank_width=2, nails=False)
+
+
+SHAPES = {1: frame_shape, 2: whitewashed_shape, 3: tall_tower_shape}
+SHADERS = {1: frame_shading, 2: whitewashed_shading, 3: tall_tower_shading}
+DETAILS = {1: frame_details, 2: whitewashed_details, 3: tall_tower_details}
+
+
+def build_base(level_number: int, wave: int = 0, stage: int = 5) -> Image.Image:
+    sprite = SHAPES[level_number](wave)
+    if stage == 1:
+        return sprite.render(silhouette=True)
+    sprite.reset_tones()
+    if stage >= 3:
+        SHADERS[level_number](sprite)
+    if stage >= 4:
+        DETAILS[level_number](sprite, random.Random(level_number * 17))
+    return sprite.render()
 
 
 def draw_base(level_number: int, wave: int) -> Image.Image:
-    return layers_to_image(BASE_WIDTH, BASE_HEIGHT, BASES[level_number](wave))
+    return build_base(level_number, wave)
 
 
 def compose(level_number: int, pose: BellPose, preset=None) -> Image.Image:

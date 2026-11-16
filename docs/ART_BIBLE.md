@@ -97,6 +97,7 @@ Todo asset do jogador é desenhado **só com os 8 cinzas exatos** da paleta `pla
 - **Cores fixas** (não recolorem): pele (`SKIN`) e luz sagrada (`HOLY`). O shader deixa passar pixels com saturação acima de 0,15.
 - Nunca usar um cinza fora dos 8 valores: um tom errado vira o índice errado no jogo.
 - **Regra do shader:** só é recolorido o pixel de **cinza neutro** (R, G e B iguais, tolerância 2). Qualquer cor com tom passa direto — por isso pele, madeira, pedra e ferro ficam com a cor natural mesmo dentro de um asset do jogador.
+- **Tom `deep`:** as rampas de material têm um 5º tom, mais fundo e puxado para azul/roxo, usado em juntas, sombras projetadas e oclusão.
 - **Rampas fixas permitidas** em assets do jogador: `SKIN`, `HOLY`, `WOOD`, `STONE`, `IRON`, `STRING` (corda/linha) e os materiais de torre `DARK_STONE`, `BRICK`, `WHITEWASH`, `SLATE`, `BRONZE`, `COPPER`, `GLASS`, `MARBLE`, `STRAW`, mais `ACID` (líquido do Alquimista e a poça; proposta de 16/11, aguarda aprovação da prancha). Todas têm leve tom (validado no JSON) e nunca podem ser trocadas por cinza puro.
 - **`ACID`** é um verde-limão saturado: contrasta em valor com a terra do caminho e em saturação com a grama, e não se confunde com o `HELLFIRE` dos demônios. Em áreas grandes (a poça) o preenchimento é o tom escuro; base e claro ficam só na borda, nas ondulações e nas bolhas, para a poça não virar o objeto mais claro da cena.
 - Presets no JSON (`recolor.presets`): `real` (padrão), `rubi`, `floresta`, `daltonismo` (azul e branco, sem amarelo/laranja), e três patentes da Veterania da Forja (recruta → sargento → capitão; patente máxima 3).
@@ -158,6 +159,9 @@ Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e *
 
 ## 7. Processo
 
+**Pipeline em 5 etapas (skill `pixel-art-2d`, desde 16/11):** silhueta → blocagem por material e plano → luz e sombra → material e detalhe → acabamento (sem contorno, ver §1). Construções e props usam o mapa de material de `ArtSource/material_map.py`: cada pixel guarda material, plano e tom, e as receitas (`stone_courses`, `brick_courses`, `planks`, `tile_roof`, `plaster_wear`) aplicam a textura com irregularidade de semente fixa. Personagens de até ~24 px seguem em grade ASCII, no perfil KO.DLL. Cada torre tem `build_base(nível, pose, stage)` para renderizar qualquer etapa.
+
+
 1. Antes de desenhar: ler a entrada do asset no GDD (Notion), o papel e as habilidades.
 2. Assets do jogador: desenhar direto nos 8 cinzas; testar com pelo menos 2 presets de recolor.
 3. Mostrar pose base ampliada (6×) sobre o fundo de preview, ao lado dos aprovados.
@@ -217,6 +221,7 @@ Limite de cores por quadro: 16 em geral, 20 em turrets e unidades do jogador e *
 - **Tileset:** decidir se o terreno será desenhado ou adaptado de pacote comprado (conferir licença comercial).
 - **Ícones de itens:** vêm do pacote comprado — definir se ficam como estão ou passam por ajuste de paleta para casar com o jogo.
 - **UI:** proposta de estilo (painel de Preparação + HUD) e escolha das fontes.
+- **Bases das 4 torres refeitas no pipeline novo (16/11)** e exportadas (idle); falta aprovação do dono. Camadas de cima do Campanário e do Alquimista, soldados nv1/nv3, Cão Infernal, Brutamontes, frasco e poça ainda sem animação.
 - **Lote da demo pública (16/11), poses base em revisão:** Forja nv1–nv3 com o ferreiro, soldados nv1 e nv3, Campanário nv1–nv3 com o sineiro, Alquimista nv1–nv3 com o operador, frasco, poça, Cão Infernal e Brutamontes. Scripts: `forja.py`, `campanario.py`, `alquimista.py`, `inimigos_r1.py`; prancha em `prancha_demo.py`.
 - Operadores do Relicário (monge) e da Falcoaria (falcoeiro).
 - **`frame0_luminance_range`:** medir nos primeiros aprovados.

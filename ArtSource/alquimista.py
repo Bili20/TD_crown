@@ -4,10 +4,14 @@ O operador mira e vira com flipX, como a besta da Balista. A poça é uma zona n
 em ACID, que contrasta com a terra do caminho e não se confunde com o HELLFIRE dos demônios.
 """
 import math
+import random
 from dataclasses import dataclass
 from PIL import Image
 from pixel_canvas import Layer, stamp, ellipse_pixels
 from style_test import PLAYER, PLAYER_COLORS, PRESETS
+from material_map import (Sprite, DEEP, DARK, BASE, LIGHT, SHINE, shade_volume, cast_shadow,
+                          ambient_occlusion, brick_courses, tile_roof, planks, plaster_wear,
+                          team_pennant, team_shield, team_banner)
 from tower_parts import (BASE_WIDTH, BASE_HEIGHT, GROUND_Y, TURRET_WIDTH, TURRET_HEIGHT, WAIST_ROW,
                          WOOD, IRON, STONE, OPENING, PRIMARY_DARK, PRIMARY_LIGHT,
                          put, fill, draw_pennant, draw_shield, draw_banner, erase_below,
@@ -149,127 +153,184 @@ def alembic(layer: Layer, left: int, top: int):
     ], left, top, COLORS)
 
 
-# --- nv1: bancada com caldeirão -------------------------------------------------------------------
-def base_bench(pose: ThrowPose) -> Layer:
+# --- Bases no pipeline em 5 etapas (material_map) --------------------------------------------------
+def acid_smoke(sprite: Sprite, x: int, top: int, phase: int):
+    for index, (offset_x, offset_y) in enumerate([(0, 0), (1, -3), (0, -6)]):
+        drift = (phase + index) % 2
+        sprite.set(x + offset_x + drift, top + offset_y, "acid", tone=LIGHT)
+        sprite.set(x + offset_x + drift + 1, top + offset_y, "acid", tone=BASE if index else LIGHT)
+        sprite.set(x + offset_x + drift, top + offset_y - 1, "acid", tone=SHINE if index == 2 else LIGHT)
+
+
+def props_layer(pose: ThrowPose, level_number: int) -> Layer:
     layer = Layer()
-    rail = LEVELS[1].rail_top_y
-    cauldron(layer, 1, 37)
-    green_smoke(layer, 3, 34, pose.bubble)
-    # Bancada: tampo na altura do parapeito, com frascos e pés de madeira.
-    for leg_x in (8, 24):
-        fill(layer, leg_x, rail + 3, leg_x + 1, GROUND_Y, WOOD.dark)
-    fill(layer, 9, rail + 7, 24, rail + 7, WOOD.dark)
-    fill(layer, 7, rail, 26, rail, WOOD.light)
-    fill(layer, 7, rail + 1, 26, rail + 2, WOOD.base)
-    fill(layer, 7, rail + 2, 26, rail + 2, WOOD.dark)
-    for x, tone in ((21, ACID.base), (23, GLASS.base)):
-        bench_flask(layer, x, rail - 1, tone)
-    # Prateleira baixa com tijolos e um frasco grande.
-    fill(layer, 12, 41, 22, GROUND_Y, BRICK.base)
-    fill(layer, 12, 41, 22, 41, BRICK.light)
-    for column in range(13, 22, 3):
-        put(layer, column, 43, BRICK.dark)
-    draw_pennant(layer, 26, rail - 10, GROUND_Y, pose.wave)
+    rail = LEVELS[level_number].rail_top_y
+    if level_number == 1:
+        cauldron(layer, 1, 37)
+        for x, tone in ((21, ACID.base), (23, GLASS.base)):
+            bench_flask(layer, x, rail - 1, tone)
+    elif level_number == 2:
+        alembic(layer, 20, 37)
     return layer
 
 
-# --- nv2: cabana de taipa com alambique ------------------------------------------------------------
-def base_hut(pose: ThrowPose) -> Layer:
-    layer = Layer()
+# nv1: bancada com caldeirão
+def bench_shape(pose: ThrowPose):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
+    rail = LEVELS[1].rail_top_y
+    for leg_x in (8, 24):
+        sprite.fill(leg_x, rail + 3, leg_x + 1, GROUND_Y, "wood", tone=DARK)
+    sprite.fill(9, rail + 7, 24, rail + 7, "wood", tone=DARK)
+    sprite.fill(7, rail, 26, rail, "wood", "top")
+    sprite.fill(7, rail + 1, 26, rail + 2, "wood")
+    sprite.fill(12, 41, 22, GROUND_Y, "brick")
+    sprite.fill(12, 41, 22, 41, "brick", "top")
+    team_pennant(sprite, 26, rail - 10, rail - 1, pose.wave)
+    return sprite
+
+
+def bench_shading(sprite: Sprite, pose: ThrowPose):
+    rail = LEVELS[1].rail_top_y
+    sprite.fill(7, rail + 2, 26, rail + 2, "wood", tone=DEEP)
+    shade_volume(sprite, 12, 42, 22, GROUND_Y, ("brick",))
+    cast_shadow(sprite, 9, 24, rail + 3, depth=1, materials=("wood",))
+
+
+def bench_details(sprite: Sprite, pose: ThrowPose, rng):
+    rail = LEVELS[1].rail_top_y
+    planks(sprite, 7, rail + 1, 26, rail + 1, rng, vertical=False, plank_width=5, nails=False)
+    brick_courses(sprite, 12, 42, 22, GROUND_Y, rng)
+    for x in (10, 17, 23):
+        sprite.set(x, rail, "wood", tone=SHINE)
+    acid_smoke(sprite, 3, 34, pose.bubble)
+
+
+# nv2: cabana de taipa com alambique (telhado de telha de tijolo atrás do operador)
+def hut_shape(pose: ThrowPose):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
     rail = LEVELS[2].rail_top_y
-    # Telhado do time atrás do operador: ele aparece na janela do sótão.
     for row in range(rail - 12, rail):
         half = (row - (rail - 12)) + 2
-        for column in range(16 - half, 16 + half):
-            if 3 <= column <= 28:
-                shade = BRICK.dark if (row - rail) % 2 == 0 else BRICK.base
-                if column < 16 - half + 2:
-                    shade = BRICK.light
-                put(layer, column, row, shade)
-    fill(layer, 3, rail - 1, 28, rail - 1, BRICK.light)
-    fill(layer, 22, rail - 11, 23, rail - 4, COPPER.light)
-    fill(layer, 23, rail - 11, 23, rail - 4, COPPER.base)
-    fill(layer, 21, rail - 12, 24, rail - 12, COPPER.shine)
-    # Janela escura do sótão atrás do operador: o capuz do time não some contra o telhado do time.
-    fill(layer, 9, rail - 8, 20, rail - 1, WOOD.dark)
-    fill(layer, 10, rail - 7, 19, rail - 1, OPENING)
-    # Paredes de taipa com vigas de madeira e telhadinho do time sobre a porta.
-    fill(layer, 6, rail + 3, 25, GROUND_Y, BRICK.light)
-    for x, y in [(9, rail + 7), (20, rail + 5), (11, GROUND_Y - 3), (22, GROUND_Y - 6)]:
-        fill(layer, x, y, x + 2, y, BRICK.base)
+        sprite.fill(max(3, 16 - half), row, min(28, 16 + half - 1), row, "brick", "top")
+    sprite.fill(22, rail - 11, 23, rail - 4, "copper", tone=LIGHT)
+    sprite.fill(21, rail - 12, 24, rail - 12, "copper", tone=SHINE)
+    sprite.fill(9, rail - 8, 20, rail - 1, "wood", tone=DARK)
+    sprite.fill(10, rail - 7, 19, rail - 1, "opening")
+    sprite.fill(6, rail + 3, 25, GROUND_Y, "brick", tone=LIGHT)
+    sprite.fill(10, 38, 13, GROUND_Y, "opening")
+    sprite.fill(9, 36, 14, 37, "primary")
+    sprite.fill(9, rail + 4, 11, rail + 7, "glass")
+    sprite.fill(5, rail, 26, rail, "wood", "top")
+    sprite.fill(5, rail + 1, 26, rail + 2, "wood")
+    team_shield(sprite, 17, rail + 4)
+    team_pennant(sprite, 16, rail - 20, rail - 13, pose.wave)
+    return sprite
+
+
+def hut_shading(sprite: Sprite, pose: ThrowPose):
+    rail = LEVELS[2].rail_top_y
+    for (x, y), cell in sprite.cells.items():
+        if cell.material == "brick" and cell.plane == "top":
+            cell.tone = BASE if x < 16 else DARK
+    for (x, y), cell in list(sprite.cells.items()):
+        if cell.material == "brick" and cell.plane == "front":
+            cell.tone = LIGHT
+    shade_volume(sprite, 6, rail + 3, 25, GROUND_Y, ("brick",), shadow_columns=3)
+    cast_shadow(sprite, 6, 25, rail + 3, depth=2, materials=("brick",))
+    sprite.fill(9, 36, 14, 36, "primary", tone=LIGHT)
+    sprite.fill(9, 37, 14, 37, "primary", tone=DARK)
+    sprite.fill(5, rail + 2, 26, rail + 2, "wood", tone=DEEP)
+    ambient_occlusion(sprite, 6, 25, GROUND_Y, ("brick",))
+
+
+def hut_details(sprite: Sprite, pose: ThrowPose, rng):
+    rail = LEVELS[2].rail_top_y
+    tile_roof(sprite, range(rail - 12, rail), 16, "brick", lit_tone=LIGHT, shadow_tone=BASE)
+    # Taipa: reboco claro com tijolo à mostra onde caiu, vigas de madeira nas quinas e no meio.
+    plaster_wear(sprite, 7, rail + 3, 24, GROUND_Y, rng, material="brick", exposed="brick")
     for beam_x in (6, 25):
-        fill(layer, beam_x, rail + 3, beam_x, GROUND_Y, WOOD.dark)
-    fill(layer, 9, rail + 4, 11, rail + 7, GLASS.base)
-    put(layer, 9, rail + 4, GLASS.shine)
-    fill(layer, 9, rail + 6, 11, rail + 7, ACID.base)
-    fill(layer, 8, rail + 3, 12, rail + 3, WOOD.dark)
-    fill(layer, 6, rail + 10, 25, rail + 10, WOOD.dark)
-    fill(layer, 10, 38, 13, GROUND_Y, OPENING)
-    fill(layer, 9, 36, 14, 36, PRIMARY_LIGHT)
-    fill(layer, 9, 37, 14, 37, PRIMARY_DARK)
-    draw_shield(layer, 17, rail + 4)
-    # Terraço com guarda-corpo de madeira.
-    fill(layer, 5, rail, 26, rail, WOOD.light)
-    fill(layer, 5, rail + 1, 26, rail + 2, WOOD.base)
-    fill(layer, 5, rail + 2, 26, rail + 2, WOOD.dark)
-    alembic(layer, 20, 37)
-    green_smoke(layer, 22, rail - 14, pose.bubble)
-    draw_pennant(layer, 16, rail - 20, rail - 13, pose.wave)
-    return layer
+        sprite.fill(beam_x, rail + 3, beam_x, GROUND_Y, "wood", tone=DARK)
+    sprite.fill(6, rail + 10, 25, rail + 10, "wood", tone=DARK)
+    sprite.set(9, rail + 4, "glass", tone=SHINE)
+    sprite.fill(9, rail + 6, 11, rail + 7, "acid")
+    sprite.fill(8, rail + 3, 12, rail + 3, "wood", tone=DARK)
+    planks(sprite, 5, rail + 1, 26, rail + 1, rng, vertical=False, plank_width=5, nails=False)
+    acid_smoke(sprite, 22, rail - 14, pose.bubble)
 
 
-# --- nv3: torre com cúpula de cobre e vidro --------------------------------------------------------
-def base_dome_tower(pose: ThrowPose) -> Layer:
-    layer = Layer()
+# nv3: torre com cúpula de cobre e vidro
+def dome_shape(pose: ThrowPose):
+    sprite = Sprite(BASE_WIDTH, BASE_HEIGHT)
     rail = LEVELS[3].rail_top_y
-    # Cúpula atrás do operador: pátina no lado da sombra, cobre no lado da luz, nervuras de vidro.
     for x, y, _, _ in ellipse_pixels(15.5, rail - 1, 10.5, 13):
-        if y > rail - 1:
-            continue
-        horizontal = (x - 15.5) / 10.5
-        if horizontal < -0.75:
-            color = COPPER.shine
-        elif horizontal < 0.55:
-            color = COPPER.light
-        else:
-            color = COPPER.base
-        put(layer, x, y, color)
+        if y <= rail - 1:
+            sprite.set(x, y, "copper", "top")
+    sprite.fill(14, rail - 16, 17, rail - 14, "copper", "top")
+    sprite.fill(7, rail + 3, 24, GROUND_Y, "brick")
+    for window_x in (9, 21):
+        sprite.fill(window_x, rail + 7, window_x + 1, rail + 10, "glass")
+    sprite.fill(14, 39, 17, GROUND_Y, "opening")
+    sprite.fill(5, rail, 26, rail, "stone", "top")
+    sprite.fill(5, rail + 1, 26, rail + 2, "stone")
+    team_banner(sprite, 13, rail + 4, 10)
+    team_pennant(sprite, 26, rail - 15, rail - 1, pose.wave)
+    return sprite
+
+
+def dome_shading(sprite: Sprite, pose: ThrowPose):
+    rail = LEVELS[3].rail_top_y
+    for (x, y), cell in sprite.cells.items():
+        if cell.material == "copper":
+            horizontal = (x - 15.5) / 10.5
+            cell.tone = SHINE if horizontal < -0.75 else (LIGHT if horizontal < 0.5 else BASE)
+    shade_volume(sprite, 7, rail + 3, 24, GROUND_Y, ("brick",))
+    cast_shadow(sprite, 7, 24, rail + 3, depth=2, materials=("brick",))
+    sprite.fill(5, rail + 2, 26, rail + 2, "stone", tone=DARK)
+    ambient_occlusion(sprite, 7, 24, GROUND_Y, ("brick",))
+
+
+def dome_details(sprite: Sprite, pose: ThrowPose, rng):
+    rail = LEVELS[3].rail_top_y
+    brick_courses(sprite, 7, rail + 3, 24, GROUND_Y, rng)
     for rib_x in (10, 15, 20):
         for y in range(rail - 12, rail):
-            if (rib_x, y) in layer.pixels:
-                put(layer, rib_x, y, GLASS.light if (y % 3) else ACID.light)
-    fill(layer, 14, rail - 16, 17, rail - 14, COPPER.light)
-    put(layer, 15, rail - 17, GLASS.shine)
-    # Torre de tijolo com janelas de vidro aceso.
-    fill(layer, 7, rail + 3, 24, GROUND_Y, BRICK.base)
-    for row in range(rail + 3, GROUND_Y + 1, 2):
-        fill(layer, 7, row, 24, row, BRICK.dark)
-        offset = 0 if (row // 2) % 2 == 0 else 2
-        if row + 1 > GROUND_Y:
-            continue
-        for column in range(8 + offset, 24, 4):
-            put(layer, column, row + 1, BRICK.dark)
-    fill(layer, 7, rail + 3, 7, GROUND_Y, BRICK.light)
-    fill(layer, 24, rail + 3, 24, GROUND_Y, BRICK.dark)
-    draw_banner(layer, 13, rail + 4, 10)
+            if sprite.is_material(rib_x, y, "copper"):
+                sprite.set(rib_x, y, "glass", tone=LIGHT if y % 3 else BASE)
+                if y % 3 == 0:
+                    sprite.set(rib_x, y, "acid", tone=LIGHT)
+    sprite.set(15, rail - 17, "glass", tone=SHINE)
     for window_x in (9, 21):
-        fill(layer, window_x, rail + 7, window_x + 1, rail + 10, GLASS.base)
-        put(layer, window_x, rail + 7, GLASS.shine)
-        fill(layer, window_x, rail + 9, window_x + 1, rail + 10, ACID.base)
-    fill(layer, 14, 39, 17, GROUND_Y, OPENING)
-    # Varanda de pedra.
-    fill(layer, 5, rail, 26, rail, STONE.shine)
-    fill(layer, 5, rail + 1, 26, rail + 2, STONE.base)
-    fill(layer, 5, rail + 2, 26, rail + 2, STONE.dark)
-    draw_pennant(layer, 26, rail - 15, rail - 1, pose.wave)
-    return layer
+        sprite.set(window_x, rail + 7, "glass", tone=SHINE)
+        sprite.fill(window_x, rail + 9, window_x + 1, rail + 10, "acid")
+    for x in range(5, 27, 4):
+        sprite.set(x, rail + 1, "stone", tone=DARK)
 
 
-BASES = {1: base_bench, 2: base_hut, 3: base_dome_tower}
+SHAPES = {1: bench_shape, 2: hut_shape, 3: dome_shape}
+SHADERS = {1: bench_shading, 2: hut_shading, 3: dome_shading}
+DETAILS = {1: bench_details, 2: hut_details, 3: dome_details}
+
+
+def build_base(level_number: int, pose: ThrowPose, stage: int = 5) -> Image.Image:
+    sprite = SHAPES[level_number](pose)
+    props = layers_to_image(BASE_WIDTH, BASE_HEIGHT, props_layer(pose, level_number))
+    if stage == 1:
+        image = sprite.render(silhouette=True)
+        mask = props.split()[3].point(lambda alpha: 255 if alpha else 0)
+        image.paste(Image.new("RGBA", image.size, (60, 56, 80, 255)), (0, 0), mask)
+        return image
+    sprite.reset_tones()
+    if stage >= 3:
+        SHADERS[level_number](sprite, pose)
+    if stage >= 4:
+        DETAILS[level_number](sprite, pose, random.Random(level_number * 23))
+    image = sprite.render()
+    image.alpha_composite(props)
+    return image
 
 
 def draw_base(level_number: int, pose: ThrowPose) -> Image.Image:
-    return layers_to_image(BASE_WIDTH, BASE_HEIGHT, BASES[level_number](pose))
+    return build_base(level_number, pose)
 
 
 def compose(level_number: int, pose: ThrowPose, preset=None) -> Image.Image:
