@@ -13,7 +13,7 @@
 | Dados | ScriptableObjects para config, torres, inimigos, fases, itens, poderes e árvore | Ajuste no Inspector sem mexer no código |
 | UI | UI Toolkit (UXML/USS) | Decidido no GDD; menu radial e tooltips ancorados no mundo |
 | Entrada | Input System | Mouse + atalhos remapeáveis |
-| Animação de sprite | **Animator da Unity** com Override Controllers | Decidido em 14/11. Um controller base por categoria e um override por asset; um clip por arquivo de animação da Art Bible, gerado por ferramenta; andar e morte continuam procedurais |
+| Animação de sprite | **Animator da Unity** com Override Controllers | Decidido em 14/11. Um controller base por categoria e um override por asset; um clip por arquivo de animação da Art Bible, gerado por ferramenta. Andar desenhado (`walk`) em todo inimigo e minion; o andar procedural foi abolido em 16/11. Morte continua procedural |
 | Recolor | Shader HLSL próprio com textura de paleta | Torres e unidades do jogador em cinza indexado (Art Bible §4.1) |
 | Áudio | Audio Mixer da Unity no começo | FMOD só se entrar um sonoplasta (decisão no PLANO) |
 | Localização | `com.unity.localization`, pt-BR de origem | Texto nunca no código |
@@ -63,7 +63,7 @@ Assets/_Project/
       Balance/            BalanceRunner (fase sem tela com uma build roteirizada)
     Game/                 definições (ScriptableObjects) e conversão para os settings do Core,
                           progresso, Selos e árvore, save, opções, entrada, Loc
-    Presentation/         MonoBehaviours que desenham o estado: views, SpriteAnimator, andar procedural, recolor
+    Presentation/         MonoBehaviours que desenham o estado: views, SpriteAnimator, recolor
     Audio/                AudioDirector (eventos → sons)
     App/                  LevelController: raiz de composição da fase
     UI/                   telas (UI Toolkit) e o HUD
@@ -162,12 +162,14 @@ public event Action<LevelResult> LevelEnded;
   - **`TeamPalette`:** componente que escreve a cor de vértice.
 - **Animação (Animator da Unity):**
   - **Controllers base**, um por categoria, em `Animation/Controllers`:
-    - `Unit` (soldados e inimigos): `Idle` padrão; `Attack` pelo trigger `Attack`, que volta ao `Idle` no fim do clip; `Hit`, `Death`, `Special` e `Spawn` só quando o asset tiver o clip.
+    - `Unit` (soldados e inimigos): `Idle` padrão; `Walk` enquanto o bool `Moving` estiver ligado; `Attack` pelo trigger `Attack`, a partir do `Idle` ou do `Walk`, e volta ao `Idle` no fim do clip (se ainda estiver andando, o `Idle` passa para o `Walk` no mesmo quadro); `Hit`, `Death`, `Special` e `Spawn` só quando o asset tiver o clip.
+    - Todo asset do controller `Unit` precisa de `walk`. Se faltar, o gerador avisa no relatório e põe o clip de `idle` no estado `Walk`, só para nada quebrar até o sheet chegar.
+    - O gerador completa controllers que já existem: estados, parâmetros e transições que faltam entram no lugar, sem trocar o GUID.
     - `TowerTurret`: `Idle` e `Attack`.
     - `TowerBase`: só `Idle` (flâmula, fumaça, sino).
   - **Por asset:** um `AnimatorOverrideController` (`{asset_id}.overrideController`) troca os clips do controller base. Subir o nível da torre troca o `runtimeAnimatorController` pelo override do nível novo.
   - **Clips:** um `.anim` por arquivo de animação da Art Bible (`{asset_id}_{animação}.png` → `{asset_id}_{animação}.anim`).
-    - Animam **só** `SpriteRenderer.sprite`: nada de transform (é do andar procedural) nem de cor (é do recolor).
+    - Animam **só** `SpriteRenderer.sprite`: nada de transform (é da view, que só posiciona a unidade no caminho) nem de cor (é do recolor).
     - Sample rate 60, com a duração de cada frame vinda da arte, não um fps fixo.
   - **Gerador:** **TD Crown → Arte → Gerar animações** lê o `Assets/_Project/Art/art-manifest.json`, que os scripts de `ArtSource/` escrevem. Para cada sheet, o manifesto tem tamanho do frame, pivô, durações em ms, loop e frame de impacto.
     - Fatia o PNG (Grid By Cell Size, pivô Bottom Center).
@@ -176,11 +178,11 @@ public event Action<LevelResult> LevelEnded;
   - **Sincronia com a simulação:** o `attackWindup` de cada torre, nível e inimigo é a soma das durações antes do frame de impacto. O gerador confere o valor contra o manifesto e avisa se divergir.
     - A simulação emite `TowerAttackStarted`; a view dispara o trigger.
     - Depois do windup, a simulação emite `TowerAttackReleased` e só então o projétil sai ou o golpe acerta.
+  - **Velocidade do `walk`:** o manifesto traz `groundSpeedTilesPerSecond` (a velocidade em que os pés do ciclo não deslizam). Ela vai para `EnemyDefinition.walkCycleSpeed` (e o equivalente das unidades do jogador); o gerador mostra o valor no relatório. A view liga `Moving` enquanto a simulação move a unidade e, no `Walk`, põe `animator.speed = velocidade atual ÷ walkCycleSpeed` (1 nos outros estados). Lentidão e atordoamento aparecem sozinhos (atordoado = velocidade 0 = `Moving` desligado).
+  - **Fase aleatória:** ao nascer, a view começa o estado num ponto aleatório do clip (`animator.Play(estado, 0, Random.value)`), para o enxame não andar em sincronia.
   - **Culling:** inimigos usam `Animator.cullingMode = CullUpdateTransforms`.
-- **Andar e morte procedurais:**
-  - `ProceduralWalk`: pulo de 1 px, inclinação ±5°, squash no pouso. A frequência segue a velocidade **atual**, então lentidão e atordoamento aparecem sozinhos.
-  - Morte: flash, queda e fade.
-  - A sombra é um SpriteRenderer separado, que não pula.
+- **Morte procedural:** flash, queda e fade.
+- **Sombra:** um SpriteRenderer separado, parado no chão (não acompanha o balanço dos frames).
 - **Interpolação:** a view desenha entre o passo anterior e o atual.
 
 ## UI Toolkit

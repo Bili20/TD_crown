@@ -2,6 +2,148 @@
   "version": 1,
   "sheets": [
     {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_attack.png",
+      "assetId": "brutamontes",
+      "animation": "attack",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        160,
+        200,
+        70,
+        80,
+        120,
+        140,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 3,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_idle.png",
+      "assetId": "brutamontes",
+      "animation": "idle",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        220,
+        180,
+        260,
+        200,
+        200,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Brutamontes/brutamontes_walk.png",
+      "assetId": "brutamontes",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 24,
+      "frameHeight": 24,
+      "pivotX": 0.5,
+      "pivotY": 0.041666666666666664,
+      "durationsMs": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.446
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_attack.png",
+      "assetId": "cao_infernal",
+      "animation": "attack",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        140,
+        180,
+        70,
+        70,
+        110,
+        120,
+        150
+      ],
+      "loop": false,
+      "impactFrame": 3,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_idle.png",
+      "assetId": "cao_infernal",
+      "animation": "idle",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        180,
+        160,
+        240,
+        160,
+        220,
+        170
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/CaoInfernal/cao_infernal_walk.png",
+      "assetId": "cao_infernal",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        65,
+        65,
+        65,
+        65,
+        65,
+        65
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.923
+    },
+    {
       "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_attack.png",
       "assetId": "imp",
       "animation": "attack",
@@ -12,14 +154,17 @@
       "pivotX": 0.5,
       "pivotY": 0.125,
       "durationsMs": [
-        140,
+        80,
+        60,
         70,
+        90,
         110,
-        140
+        120
       ],
       "loop": false,
-      "impactFrame": 1,
-      "turretAnchorPx": []
+      "impactFrame": 2,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
     },
     {
       "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_idle.png",
@@ -32,14 +177,105 @@
       "pivotX": 0.5,
       "pivotY": 0.125,
       "durationsMs": [
-        160,
-        140,
-        160,
-        140
+        180,
+        150,
+        170,
+        170,
+        130,
+        160
       ],
       "loop": true,
       "impactFrame": -1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Enemies/Imp/imp_walk.png",
+      "assetId": "imp",
+      "animation": "walk",
+      "category": "Enemies",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.125,
+      "durationsMs": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.389
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_attack.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "attack",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_idle.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "idle",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        240,
+        180,
+        240,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv1_walk.png",
+      "assetId": "forge_soldier_lv1",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
     },
     {
       "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_attack.png",
@@ -59,7 +295,8 @@
       ],
       "loop": false,
       "impactFrame": 1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
     },
     {
       "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_idle.png",
@@ -79,7 +316,96 @@
       ],
       "loop": true,
       "impactFrame": -1,
-      "turretAnchorPx": []
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv2_walk.png",
+      "assetId": "forge_soldier_lv2",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_attack.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "attack",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        140,
+        70,
+        110,
+        160
+      ],
+      "loop": false,
+      "impactFrame": 1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_idle.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "idle",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        240,
+        180,
+        240,
+        180
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 0.0
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/PlayerUnits/ForgeSoldier/forge_soldier_lv3_walk.png",
+      "assetId": "forge_soldier_lv3",
+      "animation": "walk",
+      "category": "PlayerUnits",
+      "controller": "Unit",
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        110,
+        110,
+        110,
+        110,
+        110,
+        110
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [],
+      "groundSpeedTilesPerSecond": 1.515
     },
     {
       "sheetPath": "Assets/_Project/Art/Projectiles/BalistaBolt/balista_bolt_directions.png",
@@ -95,6 +421,75 @@
       "loop": false,
       "impactFrame": -1,
       "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Alquimista/alquimista_base_lv1_idle.png",
+      "assetId": "alquimista_base_lv1",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        14
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Alquimista/alquimista_base_lv2_idle.png",
+      "assetId": "alquimista_base_lv2",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        19
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Alquimista/alquimista_base_lv3_idle.png",
+      "assetId": "alquimista_base_lv3",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        24
+      ]
     },
     {
       "sheetPath": "Assets/_Project/Art/Towers/Balista/balista_base_lv1_idle.png",
@@ -279,6 +674,135 @@
         260,
         200,
         260,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Campanario/campanario_base_lv1_idle.png",
+      "assetId": "campanario_base_lv1",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        13
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Campanario/campanario_base_lv2_idle.png",
+      "assetId": "campanario_base_lv2",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        13
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Campanario/campanario_base_lv3_idle.png",
+      "assetId": "campanario_base_lv3",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        200,
+        200,
+        200,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": [
+        0,
+        19
+      ]
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Forja/forja_base_lv1_idle.png",
+      "assetId": "forja_base_lv1",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        220,
+        160,
+        120,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Forja/forja_base_lv2_idle.png",
+      "assetId": "forja_base_lv2",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        220,
+        160,
+        120,
+        200
+      ],
+      "loop": true,
+      "impactFrame": -1,
+      "turretAnchorPx": []
+    },
+    {
+      "sheetPath": "Assets/_Project/Art/Towers/Forja/forja_base_lv3_idle.png",
+      "assetId": "forja_base_lv3",
+      "animation": "idle",
+      "category": "Towers",
+      "controller": "TowerBase",
+      "frameWidth": 32,
+      "frameHeight": 48,
+      "pivotX": 0.5,
+      "pivotY": 0.0625,
+      "durationsMs": [
+        220,
+        160,
+        120,
         200
       ],
       "loop": true,

@@ -59,6 +59,7 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
 - [x] Teste do Animator com um sprite do Diabrete (controller `Triangle`, clip `Idle`).
 - [x] Scripts de `ArtSource/` escrevendo o `art-manifest.json` (tamanho do frame, pivô, durações, loop, frame de impacto) e os sheets direto em `Assets/_Project/Art`.
 - [x] **TD Crown → Arte → Gerar animações** (`AnimationGenerator`): fatia os sheets, cria clips e overrides; controllers base `Unit`, `TowerTurret` e `TowerBase`.
+- [x] Estado `Walk` no controller `Unit` (bool `Moving`; avisa e usa o clip de idle quando o asset ainda não tem `walk`) e `groundSpeedTilesPerSecond` no manifesto. **Rodar o gerador uma vez na Unity** para o `Unit.controller` ganhar o estado.
 - [ ] Rodar o gerador no Editor e conferir o relatório no Console.
 - [ ] Trocar o teste pelos clips gerados e apagar os sheets antigos `*_sheet.png`.
 - [ ] Pacote Pipeline (`unity pipeline install`) para o Claude dirigir o Editor pelo Unity CLI.
@@ -67,7 +68,7 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
 
 **Pronto quando:** a build vazia abre em outro PC e os quatro assemblies compilam.
 
-### Fase 1: simulação base (16 a 24 h)
+### Fase 1: simulação base (18 a 27 h)
 
 - [ ] `CombatConfig`, `TowerDefinition`, `EnemyDefinition` e `LevelDefinition` como ScriptableObjects, preenchidos com os números do GDD.
 - [ ] `LevelSim` em C# puro, passo fixo de 1/60 s:
@@ -76,8 +77,8 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
   - faixas de defesa e penetração;
   - lentidão;
   - ouro, vidas e ondas, com a chamada antecipada.
-- [ ] Balista, Forja e Campanário completas, incluindo os soldados que bloqueiam, a Veterania e o respawn.
-- [ ] `BastionMap` e a matriz do Dom para essas três torres.
+- [ ] Balista, Forja, Campanário e Alquimista completas, incluindo os soldados que bloqueiam, a Veterania, o respawn, a poça e a Corrosão.
+- [ ] `BastionMap` e a matriz do Dom para essas quatro torres.
 - [ ] Eventos da simulação (seção "A simulação conversa por eventos" da ARQUITETURA).
 - [ ] Testes EditMode: dano, defesa, penetração, lentidão, pipeline de stats, Dom (próprio tipo e torres gêmeas), ouro por abate.
 - [ ] `BalanceRunner` e o menu **TD Crown → Balanceamento** com builds roteirizadas.
@@ -94,23 +95,28 @@ Cada fase termina com algo jogável ou publicável. As horas são estimativas pa
   - `EnemyView`, `SoldierView` e `ProjectileView`;
   - interpolação entre passos.
 - [ ] Shader `SpriteRecolor` com a textura de paleta e o `TeamPalette`. Conferir os 4 presets contra o lineup da Art Bible.
-- [ ] Animator nas views (trigger `Attack` no `TowerAttackStarted`, troca de override ao subir de nível); `ProceduralWalk`; morte procedural e sombra separada.
+- [ ] Animator nas views (trigger `Attack` no `TowerAttackStarted`, troca de override ao subir de nível); morte procedural e sombra separada.
+  - `Moving` ligado enquanto a unidade anda; no `Walk`, `animator.speed = velocidade atual ÷ walkCycleSpeed`. Sem andar procedural.
 - [ ] HUD mínimo (vidas, ouro, onda, 1x/2x, chamar onda) e menu radial (construir, upgrade, vender) em UI Toolkit.
 - [ ] Linhas do bastião e hover do ponto vazio mostrando o Dom.
-- [ ] 3 fases do slice com Diabrete, Cão Infernal e Brutamontes.
+- [ ] As fases 1–3 (o slice é o conteúdo da demo pública) com Diabrete, Cão Infernal e Brutamontes.
 - [ ] Playtest com 2–3 pessoas.
 
 **Pronto quando:** as 3 fases se jogam de ponta a ponta e o playtest responde às duas perguntas do slice:
 - o Dom muda onde e o que o jogador constrói?
 - os soldados bloqueando funcionam e se leem?
 
-### Fase 3: arte do slice (12 a 22 h)
+### Fase 3: arte do slice (14 a 25 h)
 
 Pela Art Bible, um arquivo por animação.
 
 - [ ] Forja: bases nv1–nv3 (tijolo e pedra escura, fornalha em `HOLY`) e soldados nv1 e nv3.
 - [ ] Campanário nv1–nv3 (cal, ardósia, sino de bronze) com o sineiro operador.
-- [ ] Cão Infernal e Brutamontes.
+- [ ] Alquimista nv1–nv3 (tijolo, cobre, vidro) com o operador, o frasco e a poça ácida.
+- [x] Cão Infernal (16x16, `HOUND_FUR`): idle, galope (`walk`) e ataque.
+- [x] Diabrete reanimado em rig: idle e ataque novos, `walk` desenhado.
+- [x] Brutamontes refeito (o carcereiro, silhueta B): idle, walk e ataque. Falta a aprovação do dono.
+- [x] Soldados da Forja nv1–nv3 com idle, walk e ataque (`soldados_forja.py`); nv1 e nv3 aguardam aprovação.
 - [ ] Tileset da região 1, ponto de construção vazio e base de bastião.
 - [ ] Efeitos básicos: impacto, pulso do Campanário, morte, moedas.
 - [ ] Proposta de estilo da UI em vetor (Preparação e HUD) e escolha das fontes.
@@ -143,9 +149,9 @@ Antes do conteúdo da região 1, para os textos novos já nascerem em tabela.
 
 **Pronto quando:** trocar o idioma troca todos os textos, sem texto fixo no código.
 
-### Fase 5: conteúdo da região 1 (24 a 38 h)
+### Fase 5: conteúdo da região 1 (20 a 32 h)
 
-- [ ] Alquimista (poça, Corrosão), Relicário (Fé, Raio) e Falcoaria (falcões, marca), na simulação e na arte. A matriz do Dom fica completa.
+- [ ] Relicário (Fé, Raio) e Falcoaria (falcões, marca), na simulação e na arte. A matriz do Dom fica completa.
 - [ ] Ninhada (crias com 0 ouro) e Gárgula (voador).
 - [ ] Carrasco do Portal e Senhor da Brasa, com as habilidades telegrafadas.
 - [ ] As 7 fases da região 1 montadas, balanceadas pela ferramenta e jogadas.

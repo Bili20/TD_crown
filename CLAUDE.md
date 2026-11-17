@@ -25,7 +25,8 @@ Tower defense de campanha em pixel art 2D top-down 3/4 para **Windows**, na Stea
    - Assets do jogador usam só os 8 cinzas de índice e as rampas fixas permitidas.
    - O import (PPU 16, Point, sem compressão) é feito pelo `PixelArtImportPostprocessor`.
    - **Animator da Unity:** um controller base por categoria e um override por asset. Clips e overrides saem de **TD Crown → Arte → Gerar animações**, a partir do `art-manifest.json`; não criar nem editar clip à mão.
-   - Clips animam só `SpriteRenderer.sprite`: transform é do andar procedural e cor é do recolor.
+   - Clips animam só `SpriteRenderer.sprite`: transform é da view (posição no caminho) e cor é do recolor.
+   - Todo inimigo e minion tem `idle`, `walk` e `attack` desenhados; não existe andar procedural.
 9. **Assemblies:**
    - `TDCrown.Core` (`Scripts/Core`, `noEngineReferences`): combate.
    - `TDCrown` (o resto de `Scripts/`): o jogo.

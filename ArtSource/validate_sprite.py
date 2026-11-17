@@ -100,6 +100,8 @@ def main() -> int:
     validation = style.get("validation", {})
     edge_margin = validation.get("edge_margin", 1)
     max_colors = args.max_colors or validation.get("max_colors_per_frame")
+    if not args.max_colors and args.size_class:
+        max_colors = validation.get("max_colors_per_size_class", {}).get(args.size_class, max_colors)
     luminance_range = validation.get("frame0_luminance_range")
     allowed = allowed_colors(palette)
 

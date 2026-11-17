@@ -186,6 +186,8 @@ Um único pipeline para todo número de torre e unidade, nesta ordem: **base →
 
 ## 5. Inimigos
 
+**Apresentação (decidido em 16/11):** todo inimigo e toda unidade que anda (soldados da Forja e qualquer minion invocado) tem `idle`, `walk` e `attack` desenhados. Não existe andar procedural (o pulo e a inclinação por código saíram): o movimento no caminho é só a posição, e o balanço está nos frames do `walk`. O passo do soldado da Forja foi desenhado para **1,5 tile/s**; a velocidade do soldado ainda não tem número aqui e entra no playtest do vertical slice.
+
 ### 5.1 Região 1
 
 | Inimigo (`id`) | Papel | Vida | Velocidade | Defesa | Ouro | Estreia |
@@ -196,7 +198,7 @@ Um único pipeline para todo número de torre e unidade, nesta ordem: **base →
 | Ninhada (`ninhada`) | ao morrer libera 4 Diabretes 1 tile atrás no caminho; Pesado | 120 | lento | Armadura 30% | 12 | fase 5 |
 | Gárgula (`gargula`) | voador, Leve | 40 | médio | — | 8 | fase 6 |
 
-Velocidades "muito rápido / lento / médio" ganham número no primeiro playtest do vertical slice.
+Velocidades "muito rápido / lento / médio" ganham número no primeiro playtest do vertical slice. Referência da arte: o galope do Cão Infernal foi desenhado para **1,9 tile/s** e o passo do Diabrete para **1,4 tile/s** (nessas velocidades os pés não deslizam). O passo do Brutamontes foi desenhado para **0,45 tile/s**. O Animator acompanha qualquer valor, mas acima de ~1,5× a referência o ciclo fica corrido: se o número final passar disso, o ciclo é redesenhado.
 
 **Mini boss, fase 4: Carrasco do Portal (`carrasco`)**
 
@@ -354,9 +356,9 @@ Mudança em número de combate passa pela ferramenta de balanceamento (ver ARQUI
 
 | Marco | Conteúdo |
 |---|---|
-| Vertical slice | 3 fases, Balista + Forja + Campanário, Diabrete, Cão Infernal e Brutamontes, bastiões de 2 |
+| Vertical slice | fases 1–3 da região 1: Balista, Forja, Campanário e Alquimista; Diabrete, Cão Infernal e Brutamontes; bastiões de 2 |
 | Demo interna | região 1 completa: 7 fases, 6 torres, 5 inimigos, mini boss, boss, 7 itens, 2 poderes |
-| Demo pública (Steam) | fases 1–3, com o Bastião logo na fase 1 |
+| Demo pública (Steam) | fases 1–3 (o mesmo conteúdo do vertical slice), com o Bastião logo na fase 1 |
 | 1.0 | 28 fases, 6 torres + 12 especializações, ~20 inimigos, 4 mini bosses, 4 bosses, 28 itens, 4 poderes, Provação em 8 fases |
 
 Primeiro corte se apertar: as especializações mais caras (Águias, Guarda do Portão). A Falcoaria fica: a região 2 depende dela contra voadores.
